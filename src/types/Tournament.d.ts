@@ -10,6 +10,6 @@ interface Tournament {
 		start: string
 		end: string
 	}
-	place: Place
+	arena?: Arena
 	status: 'available_subscription' | 'cancelled' | 'finished'
 }

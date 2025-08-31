@@ -12,7 +12,7 @@ const tournaments: Tournament[] = [
 		title: 'Bolão Garden City 2',
 		offered_subscriptions: 16,
 		remaining_subscriptions: 14,
-		status: 'available_subscription',
+		status: 'finished',
 		subscriptions: [
 			{
 				id: 1,
@@ -41,14 +41,23 @@ const tournaments: Tournament[] = [
 			start: format(new Date(), 'dd/MM/yyyy HH:mm'),
 			end: format(new Date(), 'dd/MM/yyyy HH:mm')
 		},
-		place: {
+		arena: {
 			id: 1,
-			lat: 0,
-			lng: 0,
-			name: 'Arena Afluar',
-			image: '/images/arena.png'
+			address: 'Rod. Augusto Montenegro, 1000',
+			name: 'Condomínio Cidade Jardim II',
+			image: '/images/arena.png',
+			position: {
+				lat: 0,
+				lng: 0
+			},
+			gallery: [],
+			region: {
+				id: 1,
+				name: 'Augusto Montenegro / Icoaraci'
+			}
 		}
 	},
+	
 	{
 		id: 2,
 		title: 'II Torneio Inter Arenas',
@@ -61,13 +70,21 @@ const tournaments: Tournament[] = [
 			start: format(new Date(), 'dd/MM/yyyy HH:mm'),
 			end: format(new Date(), 'dd/MM/yyyy HH:mm')
 		},
-		status: 'cancelled',
-		place: {
-			id: 2,
-			lat: 0,
-			lng: 0,
-			name: 'Arena Montenegro',
-			image: '/images/arena.png'
+		status: 'available_subscription',
+		arena: {
+			id: 1,
+			address: 'Rod. Augusto Montenegro, 300',
+			name: 'DBeach Premium',
+			image: '/images/dbeach/1.jpg',
+			position: {
+				lat: 0,
+				lng: 0
+			},
+			gallery: [],
+			region: {
+				id: 1,
+				name: 'Augusto Montenegro / Icoaraci'
+			}
 		}
 	}
 ]
@@ -106,7 +123,7 @@ export default function TournamentList() {
 								<span className="text-sm">Inscrições: R$ {tournament.price! / 100}</span>
 
 								<span className="text-sm flex gap-2">
-									Local: {tournament.place.name}
+									Local: {tournament.arena.name}
 									<a href="https://www.google.com/maps" target="_blank">
 										<ExternalLink size={15} className="cursor-pointer" />
 									</a>
