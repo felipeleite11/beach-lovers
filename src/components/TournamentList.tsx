@@ -13,6 +13,16 @@ const tournaments: Tournament[] = [
 		offered_subscriptions: 16,
 		remaining_subscriptions: 14,
 		status: 'finished',
+		categories: [
+			{
+				id: 1,
+				name: 'Masculina C'
+			},
+			{
+				id: 2,
+				name: 'Masculina D'
+			}
+		],
 		subscriptions: [
 			{
 				id: 1,
@@ -66,6 +76,16 @@ const tournaments: Tournament[] = [
 		subscriptions: [],
 		price: 1000,
 		amount: 0,
+		categories: [
+			{
+				id: 1,
+				name: 'Masculina C'
+			},
+			{
+				id: 2,
+				name: 'Masculina D'
+			}
+		],
 		subscription_period: {
 			start: format(new Date(), 'dd/MM/yyyy HH:mm'),
 			end: format(new Date(), 'dd/MM/yyyy HH:mm')

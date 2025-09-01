@@ -11,6 +11,9 @@ interface Arena {
 	business_hours?: string
 	day_use?: string
 	position?: Position
+	regulation_link?: string
+	description?: string
+	teachers?: Teacher[]
 }
 
 interface GalleryImage {

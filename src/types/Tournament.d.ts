@@ -1,6 +1,7 @@
 interface Tournament {
 	id: number
 	title: string
+	image?: string
 	price?: number
 	subscriptions: Subscription[]
 	amount?: number // in cents
@@ -10,6 +11,7 @@ interface Tournament {
 		start: string
 		end: string
 	}
+	categories: Category[]
 	arena?: Arena
 	status: 'available_subscription' | 'cancelled' | 'finished'
 }
