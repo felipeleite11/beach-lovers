@@ -37,7 +37,9 @@ export default function RootLayout({
 
             <MainMenu />
 
-            {children}
+            <main className="pl-10 pt-8">
+              {children}
+            </main>
           </div>
         </ThemeProvider>
       </body>

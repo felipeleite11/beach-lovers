@@ -1,113 +1,10 @@
 'use client'
 
-import { format } from 'date-fns'
 import React from 'react'
+import { ExternalLink } from 'lucide-react'
+import { tournaments } from '@/storage'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Button } from './ui/button'
-import { ExternalLink } from 'lucide-react'
-
-const tournaments: Tournament[] = [
-	{
-		id: 1,
-		title: 'Bolão Garden City 2',
-		offered_subscriptions: 16,
-		remaining_subscriptions: 14,
-		status: 'finished',
-		categories: [
-			{
-				id: 1,
-				name: 'Masculina C'
-			},
-			{
-				id: 2,
-				name: 'Masculina D'
-			}
-		],
-		subscriptions: [
-			{
-				id: 1,
-				user: {
-					id: 1,
-					name: 'Felipe Leite',
-					image: '/images/boy.jpg'
-				},
-				date: format(new Date(), 'dd/MM/yyyy HH:mm'),
-				price: 1000
-			},
-			{
-				id: 2,
-				user: {
-					id: 2,
-					name: 'Kleizy Guimarães',
-					image: '/images/girl.png'
-				},
-				date: format(new Date(), 'dd/MM/yyyy HH:mm'),
-				price: 1000
-			}
-		],
-		price: 1000,
-		amount: 2000,
-		subscription_period: {
-			start: format(new Date(), 'dd/MM/yyyy HH:mm'),
-			end: format(new Date(), 'dd/MM/yyyy HH:mm')
-		},
-		arena: {
-			id: 1,
-			address: 'Rod. Augusto Montenegro, 1000',
-			name: 'Condomínio Cidade Jardim II',
-			image: '/images/arena.png',
-			position: {
-				lat: 0,
-				lng: 0
-			},
-			gallery: [],
-			region: {
-				id: 1,
-				name: 'Augusto Montenegro / Icoaraci'
-			}
-		}
-	},
-	
-	{
-		id: 2,
-		title: 'II Torneio Inter Arenas',
-		offered_subscriptions: 48,
-		remaining_subscriptions: 48,
-		subscriptions: [],
-		price: 1000,
-		amount: 0,
-		categories: [
-			{
-				id: 1,
-				name: 'Masculina C'
-			},
-			{
-				id: 2,
-				name: 'Masculina D'
-			}
-		],
-		subscription_period: {
-			start: format(new Date(), 'dd/MM/yyyy HH:mm'),
-			end: format(new Date(), 'dd/MM/yyyy HH:mm')
-		},
-		status: 'available_subscription',
-		arena: {
-			id: 1,
-			address: 'Rod. Augusto Montenegro, 300',
-			name: 'DBeach Premium',
-			image: '/images/dbeach/1.jpg',
-			position: {
-				lat: 0,
-				lng: 0
-			},
-			gallery: [],
-			region: {
-				id: 1,
-				name: 'Augusto Montenegro / Icoaraci'
-			}
-		}
-	}
-]
 
 export default function TournamentList() {
 	function getStatusBadge(status: string) {
@@ -143,7 +40,7 @@ export default function TournamentList() {
 								<span className="text-sm">Inscrições: R$ {tournament.price! / 100}</span>
 
 								<span className="text-sm flex gap-2">
-									Local: {tournament.arena.name}
+									Local: {tournament.arena?.name}
 									<a href="https://www.google.com/maps" target="_blank">
 										<ExternalLink size={15} className="cursor-pointer" />
 									</a>

@@ -237,7 +237,7 @@ export default function Places() {
 	const selectedArena = arenasInSelectedRegion.find(arena => arena.id === +selectedArenaId)
 
 	return (
-		<main className="pl-10 pt-8 flex flex-col gap-6 h-[93vh]">
+		<div className="flex flex-col gap-6">
 			<h1 className="font-semibold text-3xl border-b border-b-slate-200 dark:border-b-slate-600 pb-6">Quadras e Arenas</h1>
 
 			<div className="text-sm flex items-center gap-2">
@@ -285,7 +285,7 @@ export default function Places() {
 			</div>
 
 			<ArenaContainer arena={selectedArena} />
-		</main>
+		</div>
 	)
 }
 
