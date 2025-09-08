@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import { ArrowBigDownDash, ArrowBigUpDash, Heart, Medal, MessageCircle, OctagonX, Volleyball } from 'lucide-react'
@@ -8,7 +9,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { people } from '@/storage'
 import { useQuery } from '@tanstack/react-query'
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogHeader, DialogDescription } from "@/components/ui/dialog"
-import { useState } from 'react'
 
 export default function () {
 	const { id } = useParams()
@@ -31,7 +31,7 @@ export default function () {
 	return (
 		<div className="flex flex-col gap-2">
 			<div className="grid grid-cols-[14rem_auto] gap-14 items-center">
-				<div className="relative self-start">
+				<div className="relative self-start animate__animated animate__fadeIn animate__faster">
 					<Avatar className="w-56 h-56 shadow-md">
 						<AvatarImage src={data.image} className="object-cover" />
 						<AvatarFallback>{data.name[0].toUpperCase()}</AvatarFallback>
@@ -58,7 +58,7 @@ export default function () {
 				</div>
 
 				<div className="grid grid-cols-[auto_14rem] 2xl:grid-cols-[auto_20rem] gap-8 w-full mt-20">
-					<div className="flex flex-col gap-6">
+					<div className="flex flex-col gap-6 animate__animated animate__fadeIn animate__faster delay-200">
 						<h1 className="text-3xl font-bold">{data.name}</h1>
 
 						<div className="flex flex-col gap-2">
@@ -67,7 +67,7 @@ export default function () {
 						</div>
 					</div>
 
-					<div className="flex flex-col gap-3 border-l-2 border-l-slate-700 pl-8 py-4 text-sm">
+					<div className="flex flex-col gap-3 border-l-2 border-l-slate-700 pl-8 py-4 text-sm animate__animated animate__fadeIn animate__faster delay-400">
 						<span className="flex items-center gap-2">
 							<Medal size={17} />
 							Rank geral: #{data.id}

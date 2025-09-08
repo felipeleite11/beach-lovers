@@ -74,16 +74,24 @@ export default function TournamentList() {
 							)}
 
 							<ul className="flex flex-col gap-2 max-h-36 overflow-y-auto">
-								{tournament.categories[0].subscriptions!.map(subscription => (
-									<li key={subscription.id} className="flex items-center gap-2 cursor-pointer hover:opacity-80">
-										<Avatar className="w-6 h-6">
-											<AvatarImage src={subscription.person.image} />
-											<AvatarFallback>{subscription.person.name[0].toUpperCase()}</AvatarFallback>
-										</Avatar>
+								{tournament.categories[0].subscriptions!.map(subscription => {
+									const person = subscription.person
 
-										<span className="text-sm">{subscription.person.name}</span>
-									</li>
-								))}
+									return (
+										(
+											<li key={subscription.id}>
+												<Link href={`/person/${person.id}`} className="flex items-center gap-2 cursor-pointer hover:opacity-80 w-fit">
+													<Avatar className="w-6 h-6">
+														<AvatarImage src={person.image} />
+														<AvatarFallback>{person.name[0].toUpperCase()}</AvatarFallback>
+													</Avatar>
+
+													<span className="text-sm">{person.name}</span>
+												</Link>
+											</li>
+										)
+									)
+								})}
 							</ul>
 						</div>
 					</div>
