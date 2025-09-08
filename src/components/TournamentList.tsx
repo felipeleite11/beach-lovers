@@ -5,6 +5,7 @@ import { ExternalLink } from 'lucide-react'
 import { tournaments } from '@/storage'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Button } from './ui/button'
+import Link from 'next/link'
 
 export default function TournamentList() {
 	function getStatusBadge(status: string) {
@@ -32,7 +33,8 @@ export default function TournamentList() {
 						<div className="flex justify-between gap-6">
 							<div className="flex flex-col gap-2">
 								<div className="flex gap-3 items-center font-semibold">
-									<span className="font-semibold text-xl">{tournament.title}</span>
+									<Link href={`/tournament/${tournament.id}`} className="font-semibold text-xl hover:underline underline-offset-4
+									">{tournament.title}</Link>
 
 									{getStatusBadge(tournament.status)}
 								</div>

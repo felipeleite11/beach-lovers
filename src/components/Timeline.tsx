@@ -22,7 +22,7 @@ const posts: Post[] = [
 			image: '/images/girl.png'
 		},
 		content: 'Hoje o play foi até meia-noite!',
-		date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+		date: '15/08/2025 10:50',
 		url: '/images/play.jpg',
 		likes: [
 			{
@@ -51,7 +51,7 @@ const posts: Post[] = [
 					image: '/images/boy.jpg'
 				},
 				content: 'Foi top demais!',
-				date: format(new Date(), 'dd/MM/yyyy HH:mm')
+				date: '17/08/2025 10:50'
 			},
 			{
 				id: 2,
@@ -61,7 +61,7 @@ const posts: Post[] = [
 					image: '/images/girl.png'
 				},
 				content: 'Pena que acabou cedo pra mim... =(',
-				date: format(new Date(), 'dd/MM/yyyy HH:mm')
+				date: '24/08/2025 12:12'
 			}
 		]
 	},
@@ -74,7 +74,7 @@ const posts: Post[] = [
 			image: '/images/boy.jpg'
 		},
 		content: 'Raquete nova S2',
-		date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+		date: '22/08/2025 10:50',
 		url: ['/images/raquete.jpg', '/images/raquete2.png'],
 		likes: [],
 		comments: []

@@ -7,11 +7,10 @@ import { tournaments } from "@/storage"
 import { Button } from "@/components/ui/button"
 import { InfoIcon, LogIn, Settings, Shuffle, User } from "lucide-react"
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
 } from "@/components/ui/tooltip"
-import Image from "next/image"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function Tournament() {
@@ -24,7 +23,7 @@ export default function Tournament() {
 	useEffect(() => {
 		const selectedTournament = tournaments.find(trnm => trnm.id === +id!)
 
-		if(!selectedTournament) {
+		if (!selectedTournament) {
 			router.push('/')
 			return
 		}
@@ -32,25 +31,25 @@ export default function Tournament() {
 		setTournament(selectedTournament)
 	}, [])
 
-	if(!tournament) {
+	if (!tournament) {
 		return <div className="text-slate-500 italic text-sm">Aguarde...</div>
 	}
 
 	return (
 		<div className="flex flex-col gap-6 pr-10 pb-16">
-			<div 
+			<div
 				className="w-full h-64 2xl:h-80 bg-cover bg-no-repeat bg-center rounded-lg relative"
 				style={{ backgroundImage: `url(${tournament.image})` }}
 			>
 				<div className="bg-slate-800/60 absolute top-0 left-0 w-full h-full flex flex-col gap-6 p-8">
 					<h1 className="text-xl 2xl:text-3xl font-bold text-white bg-black/60 p-4 rounded-md w-fit shadow-lg">{tournament.title}</h1>
 
-					<div className="flex gap-24 items-center -bottom-8 absolute">
+					<div className="flex gap-24 items-end -bottom-8 absolute">
 						{/* Public options */}
 						<div className="flex gap-6 items-center">
 							<Button
 								asChild
-								className="bg-emerald-700 hover:bg-emerald-800 text-white hover:text-white h-16 2xl:h-16 transition-all"
+								className="bg-emerald-700 hover:bg-emerald-800 text-white hover:text-white h-20 2xl:h-20 w-32 transition-all"
 							>
 								<Link href={`/tournament/${tournament.id}/subscribe`} className="flex flex-col justify-center gap-1 2xl:gap-3">
 									<LogIn />
@@ -93,7 +92,7 @@ export default function Tournament() {
 										</Link>
 									</Button>
 								</TooltipTrigger>
-								
+
 								<TooltipContent>
 									<p>Alterar local, data, horário, etc.</p>
 								</TooltipContent>
@@ -105,26 +104,32 @@ export default function Tournament() {
 
 			<div className="grid grid-cols-[3fr_1fr] gap-10 mt-10">
 				<div className="flex flex-col gap-8">
-					<div className="flex flex-col gap-3 2xl:gap-12 text-sm 2xl:text-sm rounded-md">
+					<div className="flex flex-col gap-3 text-sm 2xl:text-sm rounded-md">
 						<span>Local: {tournament.arena?.name} - {tournament.arena?.address}</span>
 						<span>Data e horario: {tournament.datetime}</span>
 						{tournament.price && <span>Valor por participante: R$ {tournament.price / 100}</span>}
 						{tournament.offered_subscriptions && <span>Vagas: {tournament.offered_subscriptions} pessoas ({tournament.offered_subscriptions / 2} duplas)</span>}
 					</div>
-					
+
 					<div className="flex flex-col gap-4 text-sm border-t border-slate-800 pt-5">
 						<h2 className="font-semibold text-lg">Informações do torneio</h2>
 
-						🎾 1º Torneio de Beach Tênis dos Amigos! 🏖️
+						<div className="whitespace-pre-wrap text-base font-sans">
+							{tournament.description}
+						</div>
 
-						Chegou a hora de mostrar suas habilidades na areia! Estamos convocando todos os amigos para se inscreverem e participarem do nosso primeiro torneio de Beach Tênis.
-
-						✅ Categorias D+C:
-
-						• Duplas Masculinas
-						• Duplas Femininas
-
-						{/* Espaço para vídeo-convite */}
+						{tournament.video && (
+							<div className="h-[24rem] w-[40rem]">
+								<iframe
+									src={tournament.video}
+									title="Chamada para o torneio"
+									className="w-full h-full"
+									allow="accelerometer; encrypted-media; gyroscope; web-share"
+									referrerPolicy="strict-origin-when-cross-origin"
+									allowFullScreen
+								/>
+							</div>
+						)}
 					</div>
 				</div>
 

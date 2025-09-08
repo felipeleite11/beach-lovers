@@ -1,7 +1,9 @@
 interface Tournament {
 	id: number
 	title: string
+	description?: string
 	image?: string
+	video?: string
 	price?: number
 	datetime: string
 	subscriptions: Subscription[]

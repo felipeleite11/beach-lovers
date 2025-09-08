@@ -8,217 +8,19 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select"
-import LeafletMap from "@/components/Map"
+// import LeafletMap from "@/components/Map"
 import Image from "next/image"
-import { format } from "date-fns"
 import { CalendarCheck, Clock, Map, Phone } from "lucide-react"
 
 import 'leaflet/dist/leaflet.css'
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { AvatarImage } from "@radix-ui/react-avatar"
+import { arenas } from "@/storage"
 
 const availableRegions = [
 	{ value: '1', text: 'Augusto Montenegro / Icoaraci' },
 	{ value: '2', text: 'Ananindeua' },
 	{ value: '3', text: 'Belém Centro' }
-]
-
-const arenas: Arena[] = [
-	{
-		id: 1,
-		name: 'DBeach Premium',
-		image: '/images/dbeach/dbeach.png',
-		modalities: [
-			'beach tennis', 'voleibol'
-		],
-		contacts: ['(91) 99999-9999 (WhatsApp)', 'arenadbeach@gmail.com'],
-		business_hours: 'Seg. a sex. 09h às 22h, sáb. 10h às 21h',
-		day_use: 'Seg. a sex. 09h às 22h, sáb. 10h às 21h',
-		region: {
-			id: 1,
-			name: 'Augusto Montenegro / Icoaraci'
-		},
-		gallery: [
-			{
-				title: 'Foto 1',
-				url: '/images/dbeach/2.jpg',
-				description: 'Areia tratada toda semana.'
-			},
-			{
-				title: 'Foto 2',
-				url: '/images/dbeach/3.jpg',
-				description: 'Areia tratada toda semana.'
-			},
-			{
-				title: 'Foto 3',
-				url: '/images/dbeach/4.jpg',
-				description: 'Areia tratada toda semana.'
-			},
-			{
-				title: 'Foto 4',
-				url: '/images/dbeach/5.jpg',
-				description: 'Areia tratada toda semana.'
-			},
-			{
-				title: 'Foto 5',
-				url: '/images/dbeach/6.jpg',
-				description: 'Areia tratada toda semana.'
-			},
-			{
-				title: 'Foto 6',
-				url: '/images/dbeach/7.jpg',
-				description: 'Areia tratada toda semana.'
-			},
-			{
-				title: 'Foto 7',
-				url: '/images/dbeach/1.jpg',
-				description: 'Areia tratada toda semana.'
-			}
-		],
-		address: 'Rod. Augusto Montenegro, 300',
-		tournaments: [
-			{
-				id: 2,
-				title: 'II Torneio Inter Arenas',
-				offered_subscriptions: 48,
-				remaining_subscriptions: 48,
-				subscriptions: [],
-				price: 10000,
-				image: '/images/torneio.jpg',
-				amount: 0,
-				subscription_period: {
-					start: format(new Date(), 'dd/MM/yyyy HH:mm'),
-					end: format(new Date(), 'dd/MM/yyyy HH:mm')
-				},
-				status: 'available_subscription',
-				categories: [
-					{
-						id: 1,
-						name: 'Masculina C'
-					},
-					{
-						id: 2,
-						name: 'Masculina D'
-					}
-				]
-			},
-			{
-				id: 3,
-				title: 'III Torneio Inter Arenas',
-				offered_subscriptions: 40,
-				remaining_subscriptions: 40,
-				subscriptions: [],
-				price: 8000,
-				image: '/images/torneio.jpg',
-				amount: 0,
-				subscription_period: {
-					start: format(new Date(), 'dd/MM/yyyy HH:mm'),
-					end: format(new Date(), 'dd/MM/yyyy HH:mm')
-				},
-				status: 'available_subscription',
-				categories: [
-					{
-						id: 1,
-						name: 'Masculina C'
-					},
-					{
-						id: 3,
-						name: 'Feminina C'
-					}
-				]
-			}
-		],
-		teachers: [
-			{
-				id: 1,
-				image: '/images/professor.jpg',
-				name: 'Lucas Monteiro'
-			},
-			{
-				id: 2,
-				image: '/images/professor2.png',
-				name: 'Nayana Cabral'
-			}
-		]
-	},
-
-	{
-		id: 2,
-		name: 'Afluar',
-		contacts: ['(91) 99999-9999 (WhatsApp)', 'arenadbeach@gmail.com'],
-		image: '/images/afluar/afluar.png',
-		region: {
-			id: 3,
-			name: 'Belém Centro'
-		},
-		gallery: [
-			{
-				title: 'Foto 1',
-				url: '/images/afluar/1.jpg',
-				description: 'Areia tratada toda semana.'
-			},
-			{
-				title: 'Foto 2',
-				url: '/images/afluar/2.jpg',
-				description: 'Areia tratada toda semana.'
-			},
-			{
-				title: 'Foto 3',
-				url: '/images/afluar/3.jpg',
-				description: 'Areia tratada toda semana.'
-			},
-			{
-				title: 'Foto 4',
-				url: '/images/afluar/4.jpg',
-				description: 'Areia tratada toda semana.'
-			},
-			{
-				title: 'Foto 5',
-				url: '/images/afluar/5.png',
-				description: 'Areia tratada toda semana.'
-			}
-		],
-		address: 'Rua São Boaventura, 104 - Cidade Velha'
-	},
-
-	{
-		id: 3,
-		name: 'Condomínio Cidade Jardim II',
-		contacts: ['(91) 99999-9999 (WhatsApp)', 'arenadbeach@gmail.com'],
-		image: '/images/arena.png',
-		region: {
-			id: 1,
-			name: 'Augusto Montenegro / Icoaraci'
-		},
-		gallery: [
-			{
-				title: 'Foto 1',
-				url: '/images/afluar/1.jpg',
-				description: 'Areia tratada toda semana.'
-			},
-			{
-				title: 'Foto 2',
-				url: '/images/afluar/2.jpg',
-				description: 'Areia tratada toda semana.'
-			},
-			{
-				title: 'Foto 3',
-				url: '/images/afluar/3.jpg',
-				description: 'Areia tratada toda semana.'
-			},
-			{
-				title: 'Foto 4',
-				url: '/images/afluar/4.jpg',
-				description: 'Areia tratada toda semana.'
-			},
-			{
-				title: 'Foto 5',
-				url: '/images/afluar/5.png',
-				description: 'Areia tratada toda semana.'
-			}
-		],
-		address: 'Rod. Augusto Montenegro, 1000'
-	}
 ]
 
 export default function Places() {
@@ -354,11 +156,11 @@ function ArenaContainer({ arena }: { arena?: Arena }) {
 			<div className="flex flex-col gap-4">
 				<h3 className="text-lg font-semibold mt-2">Localização</h3>
 			
-				<LeafletMap
+				{/* <LeafletMap
 					lat={-1.3710349016107874}
 					lng={-48.44330618579579}
 					marker_message="Vem pra DBeach!"
-				/>
+				/> */}
 
 				<a href="https://maps.app.goo.gl/BjYqcCu8fwHDG6ia8" target="_blank" className="text-sky-500 hover:text-sky-600">Como chegar?</a>
 			</div>
