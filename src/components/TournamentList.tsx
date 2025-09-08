@@ -67,21 +67,21 @@ export default function TournamentList() {
 						</div>
 
 						<div className="flex flex-col gap-3">
-							{tournament.subscriptions.length > 0 ? (
-								<span className="font-semibold">Participantes ({tournament.subscriptions.length} inscritos)</span>
+							{tournament.categories[0].subscriptions!.length > 0 ? (
+								<span className="font-semibold">Participantes ({tournament.categories[0].subscriptions!.length} inscritos)</span>
 							) : (
 								<span className="italic text-sm text-slate-400">Nenhum inscrito</span>
 							)}
 
 							<ul className="flex flex-col gap-2 max-h-36 overflow-y-auto">
-								{tournament.subscriptions.map(subscription => (
+								{tournament.categories[0].subscriptions!.map(subscription => (
 									<li key={subscription.id} className="flex items-center gap-2 cursor-pointer hover:opacity-80">
 										<Avatar className="w-6 h-6">
-											<AvatarImage src={subscription.user.image} />
-											<AvatarFallback>{subscription.user.name[0].toUpperCase()}</AvatarFallback>
+											<AvatarImage src={subscription.person.image} />
+											<AvatarFallback>{subscription.person.name[0].toUpperCase()}</AvatarFallback>
 										</Avatar>
 
-										<span className="text-sm">{subscription.user.name}</span>
+										<span className="text-sm">{subscription.person.name}</span>
 									</li>
 								))}
 							</ul>

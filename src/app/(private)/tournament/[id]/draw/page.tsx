@@ -1,188 +1,179 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
+import { toast } from "sonner"
+import { useQuery } from "@tanstack/react-query"
+import { tournaments } from "@/storage"
+import { Skeleton } from "@/components/ui/skeleton"
+import { groupIntoCouples, shuffle } from "@/utils/array"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Play } from "lucide-react"
-import { extendedNumber, extendedOrderNumber } from "@/lib/extended-number"
-import { openai } from "@/services/openai"
-import { textToSpeech } from "@/services/text-to-speech"
-
-const participants: Person[] = [
-	{
-		id: 1,
-		name: 'Felipe Leite',
-		status: {
-			wins: 3,
-			defeats: 0
-		},
-		feature: 'que não perdoa quando vê um buraco na quadra',
-		gender: 'M'
-	},
-	{
-		id: 2,
-		name: 'Etiene Santos',
-		status: {
-			wins: 0,
-			defeats: 3
-		},
-		feature: 'que foi a maior revelação no beach no Garden City esse ano',
-		gender: 'F'
-	},
-	{
-		id: 3,
-		name: 'Gabriel Maués',
-		status: {
-			wins: 2,
-			defeats: 1
-		},
-		feature: 'com o saque mais rápido da competição',
-		gender: 'M'
-	},
-	{
-		id: 4,
-		name: 'Klêizy Guimarães',
-		status: {
-			wins: 1,
-			defeats: 2
-		},
-		feature: 'que evoluiu muito nos últimos jogos',
-		gender: 'F'
-	}
-]
+import { Play, RotateCw } from "lucide-react"
+import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 export default function Draw() {
 	const { id } = useParams()
 
-	const [drawnPairs, setDrawnPairs] = useState<Pair[]>([
-		{
-			player_1: participants[0],
-			player_2: participants[1]
-		},
-		{
-			player_1: participants[2],
-			player_2: participants[3]
-		}
-	])
-	const [audioSequenceBase64, setAudioSequenceBase64] = useState<string[]>([])
-	const [isAudioGenerating, setIsAudioGenerating] = useState(false)
-  	const [isAudioPlaying, setIsAudioPlaying] = useState(false)
+	const router = useRouter()
 
-	async function handleGenerateAudios() {
-		try {
-			setIsAudioGenerating(true)
+	const [isSubscriptionsOk, setIsSubscriptionsOk] = useState(false)
+	const [drawnPairs, setDrawnPairs] = useState<null | Pair[]>(null)
 
-			const { data: { data: introductionAudio } } = await textToSpeech.post<{ data: string }>('/', {
-				text: 'ATENÇÃO BT LOVERS! Vamos iniciar o sorteio das duplas AGORA!'
-			})
+	const { data: tournament } = useQuery({
+		queryKey: ['find-tournament-by-id'],
+		queryFn: async () => {
+			const foundTournament = tournaments.find(tournament => tournament.id === +id!)
 
-			const audioBase64Items: string[] = [`data:audio/mp3;base64,${introductionAudio}`]
-			let orderNumber = 1
+			if (!foundTournament) {
+				toast.error('Torneio não encontrado!')
 
-			for(const pair of drawnPairs) {
-				const person1Feature = pair.player_1.feature ? `${pair.player_1.gender === 'M' ? 'Ele' : 'Ela'} ${pair.player_1.feature}...` : ''
-				const person2Feature = pair.player_2.feature ? `${pair.player_2.gender === 'M' ? 'Ele' : 'Ela'} ${pair.player_2.feature}...` : ''
-				const person1Composition = `Com ${extendedNumber(pair.player_1.status?.wins!)} vitórias e ${extendedNumber(pair.player_1.status?.defeats!)} derrotas, ${person1Feature} ${pair.player_1.name}!`
-				const person2Composition = `Com ${extendedNumber(pair.player_2.status?.wins!)} vitórias e ${extendedNumber(pair.player_2.status?.defeats!)} derrotas, ${person2Feature} ${pair.player_2.name}...`
-				const confirmationText = `${extendedOrderNumber(orderNumber)} dupla: ${pair.player_1.name} e ${pair.player_2.name}.`
-
-				// const partsOfText = [
-				// 	person1Composition,
-				// 	person2Composition,
-				// 	confirmationText,
-				// 	'Boa sorte pra vocês!'
-				// ]
-
-				const text = `${person1Composition} ${person2Composition} ${confirmationText} Boa sorte pra vocês!`
-
-				// for(const part of partsOfText) {
-				// 	const { data: verifiedText } = await openai.post<{ result: string }>('/', {
-				// 		text: part
-				// 	})
-
-				// 	console.log('verifiedText', verifiedText.result)
-
-				// 	const { data: { data: base64Audio } } = await textToSpeech.post<{ data: string }>('/', {
-				// 		text: verifiedText.result
-				// 	})
-
-				// 	audioBase64Items.push(`data:audio/mp3;base64,${base64Audio}`)
-				// }
-
-				const { data: verifiedText } = await openai.post<{ result: string }>('/', {
-					text
-				})
-
-				console.log('verifiedText', verifiedText.result)
-
-				const { data: { data: base64Audio } } = await textToSpeech.post<{ data: string }>('/', {
-					text: verifiedText.result
-				})
-
-				audioBase64Items.push(`data:audio/mp3;base64,${base64Audio}`)
-
-				orderNumber++
+				router.back()
+				return
 			}
 
-			const { data: { data: endingAudio } } = await textToSpeech.post<{ data: string }>('/', {
-				text: 'E essas foram as duplas sorteadas! O sorteio está ENCERRADO! UM ÓTIMO TORNEIO E QUE VENÇA O MELHOR!'
-			})
-
-			audioBase64Items.push(`data:audio/mp3;base64,${endingAudio}`)
-
-			setAudioSequenceBase64(audioBase64Items)
-
-			setIsAudioGenerating(false)
-		} catch(e) {
-			console.log(e)
+			return foundTournament!
 		}
+	})
+
+	function validateSubscriptionsList(subscriptions: Subscription[]) {
+		if (!subscriptions?.length) {
+			toast.warning('Este torneio não tem nenhuma inscrição.')
+
+			router.back()
+			return false
+		}
+
+		const isSubscriptionsCountPair = subscriptions.length % 2 === 0
+
+		if (!isSubscriptionsCountPair) {
+			toast.warning('Para fazer o sorteio, a quantidade de pessoas deve ser par.')
+
+			router.back()
+			return false
+		}
+
+		const malePeople = subscriptions.filter(subscription => subscription.person.gender === 'M')
+		const femalePeople = subscriptions.filter(subscription => subscription.person.gender === 'F')
+
+		if(malePeople.length !== femalePeople.length) {
+			toast.warning('A quantidade de homens é diferente da quantidade de mulheres.')
+
+			router.back()
+			return false
+		}
+
+		return true
 	}
 
-	async function handlePlaySequence() {
-		if (!audioSequenceBase64.length) {
-			return
-		}
+	function drawPairs() {
+		let people = tournament!.categories[0].subscriptions!.map(subscription => subscription.person)
 
-		setIsAudioPlaying(true)
+		people = shuffle(people)
 
-		let index = 0
-		const audio = new Audio(audioSequenceBase64[index])
+		const pairs = groupIntoCouples(people)
 
-		async function playNext() {
-			index++
+		setDrawnPairs(pairs)
+	}
 
-			if (index < audioSequenceBase64.length) {
-				audio.src = audioSequenceBase64[index]
-				audio.play()
-
-				await new Promise((r) => setTimeout(r, 1200))
-			} else {
-				setIsAudioPlaying(false)
-			}
-		}
-
-		audio.onended = playNext
-		audio.play()
+	function resetDraw() {
+		setDrawnPairs(null)
 	}
 
 	useEffect(() => {
-		handleGenerateAudios()
-	}, [])
-	
+		if (tournament) {
+			const validationResult = validateSubscriptionsList(tournament.categories[0]?.subscriptions!)
+
+			setIsSubscriptionsOk(validationResult)
+		}
+	}, [tournament])
+
+	if (!tournament) {
+		return (
+			<Skeleton className="h-40 w-full rounded-lg" />
+		)
+	}
+
+	const subscribedPeople = shuffle(tournament.categories[0].subscriptions?.map(subscription => subscription.person)!)
+
 	return (
 		<div className="flex flex-col gap-6">
-			SORTEIO do torneio {id}
+			<h1 className="font-semibold text-2xl">Sorteio de duplas</h1>
 
-			<Button className="w-fit" onClick={handlePlaySequence} isWaiting={isAudioPlaying || isAudioGenerating}>
-				Play
-				<Play size={16} />
-			</Button>
+			{isSubscriptionsOk && !drawnPairs ? (
+				<>
+					{isSubscriptionsOk && !drawnPairs && (
+						<div className="flex flex-col gap-4">
+							Tudo pronto para iniciar o sorteio.
+						</div>
+					)}
 
-			<div className="text-sm text-gray-600">
-				{audioSequenceBase64.length > 0 && `${audioSequenceBase64.length} áudios prontos!`}
-			</div>
+					<Button
+						className="bg-yellow-400 dark:bg-yellow-300 hover:bg-yellow-500 dark:hover:bg-yellow-400 text-slate-800 cursor-pointer h-24 w-48 flex flex-col self-center"
+						disabled={!isSubscriptionsOk}
+						onClick={drawnPairs ? resetDraw : drawPairs}
+					>
+						<Play size={24} />
+						Iniciar sorteio
+					</Button>
 
-			{/* Incluir musica e tambores de suspense  */}
+					<div className="flex flex-col gap-4">
+						<span className="text-lg font-semibold">{subscribedPeople?.length} pessoas inscritas</span>
+
+						<div className="flex flex-wrap relative ml-4">
+							{subscribedPeople?.map((person, idx) => (
+								<Link href={`/person/${person.id}`} key={person.id} className="flex flex-col items-center gap-1 group">
+									<Avatar className={cn(`w-24 h-24 -ml-4 animate__animated animate__fadeInUp delay-${idx * 100} group-hover:-mt-4 transition-all cursor-pointer`)}>
+										<AvatarImage src={person.image} className="object-cover w-full" />
+										<AvatarFallback>{person.name[0].toUpperCase()}</AvatarFallback>
+									</Avatar>
+
+									<span className="font-semibold text-slate-300 dark:text-slate-400 text-xs hidden group-hover:block w-20 text-center -ml-4">🏅#{person.id}</span>
+									<span className="text-xs font-semibold hidden group-hover:block w-20 text-center -ml-4">{person.name}</span>
+								</Link>
+							))}
+						</div>
+					</div>
+				</>
+			) : drawnPairs ? (
+				<div className="flex gap-16">
+					<Button
+						className="bg-yellow-400 dark:bg-yellow-300 hover:bg-yellow-500 dark:hover:bg-yellow-400 text-slate-800 cursor-pointer h-24 w-48 flex flex-col"
+						disabled={!isSubscriptionsOk}
+						onClick={resetDraw}
+					>
+						<RotateCw size={24} />
+						Refazer sorteio
+					</Button>
+
+					{drawnPairs && (
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-40">
+							{drawnPairs.map((pair, idx) => (
+								<div className="flex justify-between gap-6 relative" key={idx}>
+									<Avatar className={cn(`w-24 h-24 animate__animated animate__fadeInUp`)}>
+										<AvatarImage src={pair[0].image} className="object-cover w-full" />
+										<AvatarFallback>{pair[0].name[0].toUpperCase()}</AvatarFallback>
+									</Avatar>
+
+									<Avatar className={cn(`w-24 h-24 absolute left-20 top-6 shadow-md animate__animated animate__fadeInUp delay-[200ms]`)}>
+										<AvatarImage src={pair[1].image} className="object-cover w-full" />
+										<AvatarFallback>{pair[1].name[0].toUpperCase()}</AvatarFallback>
+									</Avatar>
+
+									<div className="flex flex-col absolute top-24 w-48">
+										<span className={cn(`text-lg font-bold animate__animated animate__fadeInUp`)}>{pair[0].name}</span>
+										<span className={cn(`text-md font-bold ml-5 animate__animated animate__fadeInUp delay-[200ms]`)}>&</span>
+										<span className={cn(`text-lg font-bold ml-11 -mt-5 animate__animated animate__fadeInUp delay-[200ms]`)}>{pair[1].name}</span>
+									</div>
+								</div>
+							))}
+						</div>
+					)}
+				</div>
+			) : 'Aguarde...'}
 		</div>
 	)
 }
+
+{/* <TournamentDrawResultVoice drawnPairs={drawnPairs} /> */ }

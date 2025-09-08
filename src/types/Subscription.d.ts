@@ -1,6 +1,7 @@
 interface Subscription {
 	id: number
 	price?: number // in cents
-	user: User
+	user?: User
+	person: Person
 	date: string
 }

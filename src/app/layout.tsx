@@ -1,7 +1,8 @@
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import "animate.css"
-import "./globals.css"
+import "@/styles/custom-animations.css"
+import "@/styles/globals.css"
 
 import { Providers } from "@/components/Providers"
 

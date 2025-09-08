@@ -1,9 +1,9 @@
 import { ReactNode } from "react"
+import { headers } from 'next/headers'
+import { redirect } from "next/navigation"
 import MainMenu from "@/components/MainMenu"
 import NavbarAuth from "@/components/NavbarAuth"
-import { headers } from 'next/headers'
 import { auth } from "@/lib/auth"
-import { redirect } from "next/navigation"
 
 export default async function PrivateLayout({ children }: { children: ReactNode }) {
 	const session = await auth.api.getSession({

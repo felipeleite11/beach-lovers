@@ -19,33 +19,206 @@ Duplas masculinas, femininas e mistas`,
 		categories: [
 			{
 				id: 1,
-				name: 'Masculina C'
+				name: 'Mista C',
+				subscriptions: [
+					{
+						id: 1,
+						person: {
+							gender: 'M',
+							id: 1,
+							name: 'Felipe Leite',
+							slug: 'felipe-leite',
+							image: 'https://mockmind-api.uifaces.co/content/human/222.jpg'
+						},
+						date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+						price: 1000
+					},
+					{
+						id: 2,
+						person: {
+							gender: 'F',
+							id: 2,
+							name: 'Kleizy Guimarães',
+							slug: 'kleizy-guimaraes',
+							image: 'https://mockmind-api.uifaces.co/content/human/221.jpg'
+						},
+						date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+						price: 1000
+					},
+					{
+						id: 3,
+						person: {
+							gender: 'M',
+							id: 3,
+							name: 'Gabriel Maués',
+							slug: 'gabriel-maues',
+							image: 'https://mockmind-api.uifaces.co/content/human/213.jpg'
+						},
+						date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+						price: 1000
+					},
+					{
+						id: 4,
+						person: {
+							gender: 'F',
+							id: 4,
+							name: 'Jeovana Gabriely',
+							slug: 'jeovana-gabriely',
+							image: 'https://mockmind-api.uifaces.co/content/human/205.jpg'
+						},
+						date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+						price: 1000
+					},
+					{
+						id: 5,
+						person: {
+							gender: 'M',
+							id: 5,
+							name: 'Lucas Andrade',
+							slug: 'lucas-andrade',
+							image: 'https://mockmind-api.uifaces.co/content/human/34.jpg'
+						},
+						date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+						price: 1000
+					},
+					{
+						id: 6,
+						person: {
+							gender: 'F',
+							id: 6,
+							name: 'Mariana Costa',
+							slug: 'mariana-costa',
+							image: 'https://mockmind-api.uifaces.co/content/human/87.jpg'
+						},
+						date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+						price: 1000
+					},
+					{
+						id: 7,
+						person: {
+							gender: 'M',
+							id: 7,
+							name: 'Pedro Henrique',
+							slug: 'pedro-henrique',
+							image: 'https://mockmind-api.uifaces.co/content/human/45.jpg'
+						},
+						date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+						price: 1000
+					},
+					{
+						id: 8,
+						person: {
+							gender: 'F',
+							id: 8,
+							name: 'Isabela Moura',
+							slug: 'isabela-moura',
+							image: 'https://mockmind-api.uifaces.co/content/human/150.jpg'
+						},
+						date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+						price: 1000
+					},
+					{
+						id: 9,
+						person: {
+							gender: 'M',
+							id: 9,
+							name: 'Rafael Santos',
+							slug: 'rafael-santos',
+							image: 'https://mockmind-api.uifaces.co/content/human/115.jpg'
+						},
+						date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+						price: 1000
+					},
+					{
+						id: 10,
+						person: {
+							gender: 'F',
+							id: 10,
+							name: 'Carolina Silva',
+							slug: 'carolina-silva',
+							image: 'https://mockmind-api.uifaces.co/content/human/194.jpg'
+						},
+						date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+						price: 1000
+					},
+					{
+						id: 11,
+						person: {
+							gender: 'M',
+							id: 11,
+							name: 'Bruno Almeida',
+							slug: 'bruno-almeida',
+							image: 'https://mockmind-api.uifaces.co/content/human/198.jpg'
+						},
+						date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+						price: 1000
+					},
+					{
+						id: 12,
+						person: {
+							gender: 'F',
+							id: 12,
+							name: 'Fernanda Rocha',
+							slug: 'fernanda-rocha',
+							image: 'https://mockmind-api.uifaces.co/content/human/190.jpg'
+						},
+						date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+						price: 1000
+					},
+					{
+						id: 13,
+						person: {
+							gender: 'M',
+							id: 13,
+							name: 'Gustavo Lima',
+							slug: 'gustavo-lima',
+							image: 'https://mockmind-api.uifaces.co/content/human/27.jpg'
+						},
+						date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+						price: 1000
+					},
+					{
+						id: 14,
+						person: {
+							gender: 'F',
+							id: 14,
+							name: 'Patrícia Oliveira',
+							slug: 'patricia-oliveira',
+							image: 'https://mockmind-api.uifaces.co/content/human/110.jpg'
+						},
+						date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+						price: 1000
+					},
+					{
+						id: 15,
+						person: {
+							gender: 'M',
+							id: 15,
+							name: 'Thiago Martins',
+							slug: 'thiago-martins',
+							image: 'https://mockmind-api.uifaces.co/content/human/201.jpg'
+						},
+						date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+						price: 1000
+					},
+					{
+						id: 16,
+						person: {
+							gender: 'F',
+							id: 16,
+							name: 'Beatriz Souza',
+							slug: 'beatriz-souza',
+							image: 'https://mockmind-api.uifaces.co/content/human/193.jpg'
+						},
+						date: format(new Date(), 'dd/MM/yyyy HH:mm'),
+						price: 1000
+					}
+				]
 			},
 			{
 				id: 2,
-				name: 'Masculina D'
-			}
-		],
-		subscriptions: [
-			{
-				id: 1,
-				user: {
-					id: 1,
-					name: 'Felipe Leite',
-					image: '/images/boy.jpg'
-				},
-				date: format(new Date(), 'dd/MM/yyyy HH:mm'),
-				price: 1000
-			},
-			{
-				id: 2,
-				user: {
-					id: 2,
-					name: 'Kleizy Guimarães',
-					image: '/images/girl.png'
-				},
-				date: format(new Date(), 'dd/MM/yyyy HH:mm'),
-				price: 1000
+				name: 'Masculina D',
+				subscriptions: []
 			}
 		],
 		price: 1000,
@@ -83,9 +256,10 @@ Duplas masculinas, femininas e mistas`,
 				id: 1,
 				name: 'Augusto Montenegro / Icoaraci'
 			}
-		}
+		},
+		teams: []
 	},
-	
+
 	{
 		id: 2,
 		title: 'II Torneio Inter Arenas',
@@ -99,7 +273,6 @@ Chegou a hora de mostrar suas habilidades na areia! Estamos convocando todos os 
 • Duplas Femininas`,
 		offered_subscriptions: 48,
 		remaining_subscriptions: 48,
-		subscriptions: [],
 		price: 1000,
 		datetime: '14/10/2025, das 10h às 16h',
 		amount: 0,
@@ -108,11 +281,13 @@ Chegou a hora de mostrar suas habilidades na areia! Estamos convocando todos os 
 		categories: [
 			{
 				id: 1,
-				name: 'Masculina C'
+				name: 'Masculina C',
+				subscriptions: []
 			},
 			{
 				id: 2,
-				name: 'Masculina D'
+				name: 'Masculina D',
+				subscriptions: []
 			}
 		],
 		subscription_period: {
@@ -159,32 +334,241 @@ Chegou a hora de mostrar suas habilidades na areia! Estamos convocando todos os 
 				id: 1,
 				name: 'Augusto Montenegro / Icoaraci'
 			}
-		}
+		},
+		teams: []
 	}
 ]
 
 export const people: Person[] = [
 	{
+		gender: 'M',
 		id: 1,
 		name: 'Felipe Leite',
 		slug: 'felipe-leite',
+		image: 'https://mockmind-api.uifaces.co/content/human/222.jpg',
+		equipment: {
+			image: '/images/raquete.png',
+			name: 'Raquete NOX NG17 Silver'
+		},
+		images: [
+			{
+				author: {
+					id: 1,
+					name: 'Felipe Leite',
+					gender: 'M',
+					slug: 'felipe-leite'
+				},
+				id: 1,
+				url: '/images/afluar/1.jpg',
+				content: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo, eveniet.',
+				date: '01/09/2025 10:00'
+			},
+			{
+				author: {
+					id: 1,
+					name: 'Felipe Leite',
+					gender: 'M',
+					slug: 'felipe-leite'
+				},
+				id: 2,
+				url: '/images/afluar/2.jpg',
+				content: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo, eveniet.',
+				date: '01/09/2025 11:00'
+			},
+			{
+				author: {
+					id: 1,
+					name: 'Felipe Leite',
+					gender: 'M',
+					slug: 'felipe-leite'
+				},
+				id: 3,
+				url: '/images/afluar/3.jpg',
+				content: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo, eveniet.',
+				date: '01/09/2025 12:00'
+			},
+			{
+				author: {
+					id: 1,
+					name: 'Felipe Leite',
+					gender: 'M',
+					slug: 'felipe-leite'
+				},
+				id: 4,
+				url: '/images/afluar/3.jpg',
+				content: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo, eveniet.',
+				date: '01/09/2025 12:00'
+			},
+			{
+				author: {
+					id: 1,
+					name: 'Felipe Leite',
+					gender: 'M',
+					slug: 'felipe-leite'
+				},
+				id: 5,
+				url: '/images/afluar/3.jpg',
+				content: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo, eveniet.',
+				date: '01/09/2025 12:00'
+			},
+			{
+				author: {
+					id: 1,
+					name: 'Felipe Leite',
+					gender: 'M',
+					slug: 'felipe-leite'
+				},
+				id: 6,
+				url: '/images/afluar/3.jpg',
+				content: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo, eveniet.',
+				date: '01/09/2025 12:00'
+			},
+			{
+				author: {
+					id: 1,
+					name: 'Felipe Leite',
+					gender: 'M',
+					slug: 'felipe-leite'
+				},
+				id: 7,
+				url: '/images/afluar/3.jpg',
+				content: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo, eveniet.',
+				date: '01/09/2025 12:00'
+			},
+			{
+				author: {
+					id: 1,
+					name: 'Felipe Leite',
+					gender: 'M',
+					slug: 'felipe-leite'
+				},
+				id: 8,
+				url: '/images/afluar/3.jpg',
+				content: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo, eveniet.',
+				date: '01/09/2025 12:00'
+			},
+			{
+				author: {
+					id: 1,
+					name: 'Felipe Leite',
+					gender: 'M',
+					slug: 'felipe-leite'
+				},
+				id: 9,
+				url: '/images/afluar/3.jpg',
+				content: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo, eveniet.',
+				date: '01/09/2025 12:00'
+			}
+		]
+	},
+	{
+		gender: 'F',
+		id: 2,
+		name: 'Kleizy Guimarães',
+		slug: 'kleizy-guimaraes',
+		image: 'https://mockmind-api.uifaces.co/content/human/221.jpg'
+	},
+	{
 		gender: 'M',
-		image: '/images/boy.jpg',
-		status: {
-			defeats: 4,
-			wins: 7
+		id: 3,
+		name: 'Gabriel Maués',
+		slug: 'gabriel-maues',
+		image: 'https://mockmind-api.uifaces.co/content/human/213.jpg'
+	},
+	{
+		gender: 'F',
+		id: 4,
+		name: 'Jeovana Gabriely',
+		slug: 'jeovana-gabriely',
+		image: 'https://mockmind-api.uifaces.co/content/human/205.jpg'
+	},
+	{
+		gender: 'M',
+		id: 5,
+		name: 'Lucas Andrade',
+		slug: 'lucas-andrade',
+		image: 'https://mockmind-api.uifaces.co/content/human/34.jpg'
+	},
+	{
+		gender: 'F',
+		id: 6,
+		name: 'Mariana Costa',
+		slug: 'mariana-costa',
+		image: 'https://mockmind-api.uifaces.co/content/human/87.jpg'
+	},
+	{
+		gender: 'M',
+		id: 7,
+		name: 'Pedro Henrique',
+		slug: 'pedro-henrique',
+		image: 'https://mockmind-api.uifaces.co/content/human/45.jpg'
+	},
+	{
+		gender: 'F',
+		id: 8,
+		name: 'Isabela Moura',
+		slug: 'isabela-moura',
+		image: 'https://mockmind-api.uifaces.co/content/human/150.jpg'
+	},
+	{
+		gender: 'M',
+		id: 9,
+		name: 'Rafael Santos',
+		slug: 'rafael-santos',
+		image: 'https://mockmind-api.uifaces.co/content/human/115.jpg',
+		equipment: {
+			image: '/images/raquete.png',
+			name: 'Raquete NOX NG17 Silver'
 		}
 	},
 	{
-		id: 2,
-		name: 'Cleizi Guimarães',
-		slug: 'kleizy-guimaraes',
 		gender: 'F',
-		image: '/images/girl.png',
-		status: {
-			defeats: 0,
-			wins: 10
-		}
+		id: 10,
+		name: 'Carolina Silva',
+		slug: 'carolina-silva',
+		image: 'https://mockmind-api.uifaces.co/content/human/194.jpg'
+	},
+	{
+		gender: 'M',
+		id: 11,
+		name: 'Bruno Almeida',
+		slug: 'bruno-almeida',
+		image: 'https://mockmind-api.uifaces.co/content/human/198.jpg'
+	},
+	{
+		gender: 'F',
+		id: 12,
+		name: 'Fernanda Rocha',
+		slug: 'fernanda-rocha',
+		image: 'https://mockmind-api.uifaces.co/content/human/190.jpg'
+	},
+	{
+		gender: 'M',
+		id: 13,
+		name: 'Gustavo Lima',
+		slug: 'gustavo-lima',
+		image: 'https://mockmind-api.uifaces.co/content/human/27.jpg'
+	},
+	{
+		gender: 'F',
+		id: 14,
+		name: 'Patrícia Oliveira',
+		slug: 'patricia-oliveira',
+		image: 'https://mockmind-api.uifaces.co/content/human/110.jpg'
+	},
+	{
+		id: 15,
+		gender: 'M',
+		name: 'Thiago Martins',
+		slug: 'thiago-martins',
+		image: 'https://mockmind-api.uifaces.co/content/human/201.jpg'
+	},
+	{
+		id: 16,
+		gender: 'F',
+		name: 'Beatriz Souza',
+		slug: 'beatriz-souza',
+		image: 'https://mockmind-api.uifaces.co/content/human/193.jpg'
 	}
 ]
 
@@ -339,3 +723,9 @@ export const arenas: Arena[] = [
 		tournaments: tournaments.filter(tournament => tournament.arena?.id === 3)
 	}
 ]
+
+export const user: User = {
+	id: 1,
+	name: 'Felipe Leite',
+	image: 'https://mockmind-api.uifaces.co/content/human/149.jpg'
+}

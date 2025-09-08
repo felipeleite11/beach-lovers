@@ -1,6 +1,6 @@
 interface Post {
 	id: number
-	author: User
+	author: Person
 	url: string | string[]
 	content: string
 	date: string

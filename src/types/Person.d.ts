@@ -10,4 +10,6 @@ interface Person {
 	}
 	feature?: string
 	gender: 'M' | 'F'
+	equipment?: Equipment
+	images?: Post[]
 }

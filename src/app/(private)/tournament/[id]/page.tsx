@@ -4,14 +4,9 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { tournaments } from "@/storage"
-import { Button } from "@/components/ui/button"
-import { InfoIcon, LogIn, Settings, Shuffle, User } from "lucide-react"
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { User } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function Tournament() {
 	const { id } = useParams()
@@ -32,77 +27,39 @@ export default function Tournament() {
 	}, [])
 
 	if (!tournament) {
-		return <div className="text-slate-500 italic text-sm">Aguarde...</div>
+		return (
+			<div className="grid grid-cols-[3fr_16rem] gap-8 items-start mt-4">
+				<div className="flex flex-col gap-3">
+					<Skeleton className="h-11 w-full rounded-lg" />
+					<Skeleton className="h-11 w-full rounded-lg" />
+					<Skeleton className="h-11 w-full rounded-lg" />
+					<Skeleton className="h-11 w-full rounded-lg" />
+				</div>
+
+				<div className="flex flex-col gap-4">
+					<div className="flex items-center gap-2">
+						<Skeleton className="h-12 w-12 rounded-full aspect-square" />
+						<Skeleton className="h-8 w-full rounded-md" />
+					</div>
+
+					<div className="flex items-center gap-2">
+						<Skeleton className="h-12 w-12 rounded-full aspect-square" />
+						<Skeleton className="h-8 w-full rounded-md" />
+					</div>
+				</div>
+
+				<div className="flex flex-col gap-3">
+					<Skeleton className="h-36 w-full rounded-lg" />
+					<Skeleton className="h-11 w-full rounded-lg" />
+					<Skeleton className="h-11 w-full rounded-lg" />
+				</div>
+			</div>
+		)
 	}
 
 	return (
-		<div className="flex flex-col gap-6 pr-10 pb-16">
-			<div
-				className="w-full h-64 2xl:h-80 bg-cover bg-no-repeat bg-center rounded-lg relative"
-				style={{ backgroundImage: `url(${tournament.image})` }}
-			>
-				<div className="bg-slate-800/60 absolute top-0 left-0 w-full h-full flex flex-col gap-6 p-8">
-					<h1 className="text-xl 2xl:text-3xl font-bold text-white bg-black/60 p-4 rounded-md w-fit shadow-lg">{tournament.title}</h1>
-
-					<div className="flex gap-24 items-end -bottom-8 absolute">
-						{/* Public options */}
-						<div className="flex gap-6 items-center">
-							<Button
-								asChild
-								className="bg-emerald-700 hover:bg-emerald-800 text-white hover:text-white h-20 2xl:h-20 w-32 transition-all"
-							>
-								<Link href={`/tournament/${tournament.id}/subscribe`} className="flex flex-col justify-center gap-1 2xl:gap-3">
-									<LogIn />
-									Inscrever-se
-								</Link>
-							</Button>
-						</div>
-
-						{/* Manager options */}
-						<div className="flex gap-6 items-center">
-							<Button
-								asChild
-								className="bg-orange-700 hover:bg-orange-800 text-white hover:text-white h-16 2xl:h-16 transition-all"
-							>
-								<Link href={`/tournament/${tournament.id}/draw`} className="flex flex-col justify-center gap-1 2xl:gap-3">
-									<Shuffle />
-									Iniciar sorteio das duplas
-								</Link>
-							</Button>
-
-							<Button
-								asChild
-								className="bg-sky-700 hover:bg-sky-800 text-white hover:text-white h-16 2xl:h-16 transition-all"
-							>
-								<Link href={`/tournament/${tournament.id}/draw`} className="flex flex-col justify-center gap-1 2xl:gap-3">
-									<InfoIcon />
-									Publicar informativo
-								</Link>
-							</Button>
-
-							<Tooltip>
-								<TooltipTrigger>
-									<Button
-										asChild
-										className="bg-yellow-700 hover:bg-yellow-800 text-white hover:text-white h-16 2xl:h-16 transition-all"
-									>
-										<Link href={`/tournament/${tournament.id}/draw`} className="flex flex-col justify-center gap-1 2xl:gap-3">
-											<Settings />
-											Alterar dados do torneio
-										</Link>
-									</Button>
-								</TooltipTrigger>
-
-								<TooltipContent>
-									<p>Alterar local, data, horário, etc.</p>
-								</TooltipContent>
-							</Tooltip>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div className="grid grid-cols-[3fr_1fr] gap-10 mt-10">
+		<div className="flex flex-col gap-6">
+			<div className="grid grid-cols-[3fr_1fr] gap-10 mt-3">
 				<div className="flex flex-col gap-8">
 					<div className="flex flex-col gap-3 text-sm 2xl:text-sm rounded-md">
 						<span>Local: {tournament.arena?.name} - {tournament.arena?.address}</span>
@@ -160,7 +117,6 @@ export default function Tournament() {
 				{/* Endereço */}
 
 				{/* Organização */}
-
 			</div>
 		</div>
 	)

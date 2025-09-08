@@ -6,7 +6,6 @@ interface Tournament {
 	video?: string
 	price?: number
 	datetime: string
-	subscriptions: Subscription[]
 	amount?: number // in cents
 	offered_subscriptions?: number
 	remaining_subscriptions?: number
@@ -18,4 +17,5 @@ interface Tournament {
 	categories: Category[]
 	arena?: Arena
 	status: 'available_subscription' | 'cancelled' | 'finished'
+	teams?: Pair[]
 }

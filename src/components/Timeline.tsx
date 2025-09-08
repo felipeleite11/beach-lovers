@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import { format } from "date-fns";
 import Image from "next/image";
 import { Heart, MessageCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -19,7 +18,9 @@ const posts: Post[] = [
 		author: {
 			id: 2,
 			name: 'Larissa Carvalho',
-			image: '/images/girl.png'
+			image: '/images/girl.png',
+			slug: 'larissa-carvalho',
+			gender: 'F'
 		},
 		content: 'Hoje o play foi até meia-noite!',
 		date: '15/08/2025 10:50',
@@ -71,7 +72,9 @@ const posts: Post[] = [
 		author: {
 			id: 3,
 			name: 'Yuri Rego',
-			image: '/images/boy.jpg'
+			image: '/images/boy.jpg',
+			gender: 'M',
+			slug: 'yuri-rego'
 		},
 		content: 'Raquete nova S2',
 		date: '22/08/2025 10:50',
