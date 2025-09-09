@@ -3,13 +3,29 @@ import { prismaAdapter } from "better-auth/adapters/prisma"
 import { prisma } from '@/lib/prisma'
 
 export const auth = betterAuth({
-	database: prismaAdapter(prisma, {
+    database: prismaAdapter(prisma, {
         provider: 'sqlite'
     }),
     emailAndPassword: {
         enabled: true,
         requireEmailVerification: false
     },
+    databaseHooks: {
+        user: {
+            create: {
+                after: async user => {
+                    await prisma.person.create({
+                        data: {
+                            name: user.name,
+                            start_playing_date: new Date(),
+                            userId: user.id
+                        }
+                    })
+                }
+            }
+        }
+    }
+
     // socialProviders: {
     //     google: { 
     //         clientId: process.env.GOOGLE_CLIENT_ID!, 

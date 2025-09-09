@@ -1,6 +1,6 @@
 import React from 'react'
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@radix-ui/react-accordion";
-import { CalendarDays, ChevronDownIcon, ImageUp, MapPin, Plus, Search, Trophy, Users } from "lucide-react";
+import { CalendarDays, ChevronDownIcon, GraduationCap, ImageUp, MapPin, Plus, Search, Tag, Trophy, Users } from "lucide-react";
 import Link from "next/link";
 
 export default function MainMenu() {
@@ -101,6 +101,16 @@ export default function MainMenu() {
 					</AccordionContent>
 				</AccordionItem>
 			</Accordion>
+
+			<Link href="/marketplace" className="p-2 rounded-md hover:bg-white/10 flex gap-2 items-center text-sm">
+				<Tag size={16} />
+				Novos e usados
+			</Link>
+
+			<Link href="/learning" className="p-2 rounded-md hover:bg-white/10 flex gap-2 items-center text-sm">
+				<GraduationCap size={16} />
+				Encontrar professores
+			</Link>
 		</aside>
 	)
 }

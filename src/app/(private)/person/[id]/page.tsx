@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { people } from '@/storage'
 import { useQuery } from '@tanstack/react-query'
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogHeader, DialogDescription } from "@/components/ui/dialog"
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function () {
 	const { id } = useParams()
@@ -25,12 +26,32 @@ export default function () {
 	})
 
 	if (!data) {
-		return null
+		return (
+			<div className="grid grid-cols-[14rem_auto] gap-14">
+				<Skeleton className="w-56 h-56 rounded-full" />
+
+				<div className="flex flex-col gap-3 mt-20">
+					<Skeleton className="h-11 w-80 rounded-lg" />
+				</div>
+
+				<div className="col-span-2 flex flex-wrap gap-1">
+					<Skeleton className="w-48 h-48 rounded-sm" />
+					<Skeleton className="w-48 h-48 rounded-sm" />
+					<Skeleton className="w-48 h-48 rounded-sm" />
+					<Skeleton className="w-48 h-48 rounded-sm" />
+					<Skeleton className="w-48 h-48 rounded-sm" />
+					<Skeleton className="w-48 h-48 rounded-sm" />
+					<Skeleton className="w-48 h-48 rounded-sm" />
+				</div>
+			</div>
+		)
 	}
 
 	return (
 		<div className="flex flex-col gap-2">
 			<div className="grid grid-cols-[14rem_auto] gap-14 items-center">
+				
+				{/* Header */}
 				<div className="relative self-start animate__animated animate__fadeIn animate__faster">
 					<Avatar className="w-56 h-56 shadow-md">
 						<AvatarImage src={data.image} className="object-cover" />
@@ -57,6 +78,7 @@ export default function () {
 					)}
 				</div>
 
+				{/* Right side info */}
 				<div className="grid grid-cols-[auto_14rem] 2xl:grid-cols-[auto_20rem] gap-8 w-full mt-20">
 					<div className="flex flex-col gap-6 animate__animated animate__fadeIn animate__faster delay-200">
 						<h1 className="text-3xl font-bold">{data.name}</h1>
@@ -95,7 +117,8 @@ export default function () {
 					</div>
 				</div>
 
-				<div className="flex flex-wrap gap-6 col-span-2">
+				{/* Gallery */}
+				<div className="flex flex-wrap gap-1 col-span-2">
 					{data.images?.map((image, idx) => {
 						const imageToShow = Array.isArray(image.url) ? image.url[0] : image.url
 
@@ -116,7 +139,7 @@ export default function () {
 											className="object-cover w-48 h-48 rounded-sm group-hover:scale-105 transition-all saturate-50 group-hover:saturate-100"
 										/>
 
-										<span className="w-full text-sm hidden group-hover:block animate__animated animate__fadeIn animate__faster absolute bottom-0 bg-black/70 p-2 rounded-md">
+										<span className="w-full text-sm hidden group-hover:block animate__animated animate__fadeIn animate__faster absolute bottom-0 text-white bg-black/70 p-2 rounded-md">
 											{image.content}
 										</span>
 									</div>

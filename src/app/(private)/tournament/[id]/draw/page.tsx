@@ -162,9 +162,9 @@ export default function Draw() {
 									</Avatar>
 
 									<div className="flex flex-col absolute top-24 w-48">
-										<span className={cn(`text-lg font-bold animate__animated animate__fadeInUp`)}>{pair[0].name}</span>
-										<span className={cn(`text-md font-bold ml-5 animate__animated animate__fadeInUp delay-[200ms]`)}>&</span>
-										<span className={cn(`text-lg font-bold ml-11 -mt-5 animate__animated animate__fadeInUp delay-[200ms]`)}>{pair[1].name}</span>
+										<span className={cn(`text-lg bg-white dark:bg-transparent py-1 px-2 rounded-md w-fit font-bold animate__animated animate__fadeInUp`)}>{pair[0].name}</span>
+										<span className={cn(`text-md bg-white dark:bg-transparent py-1 px-2 rounded-md w-fit font-bold ml-1 -mt-2 animate__animated animate__fadeInUp delay-[200ms]`)}>&</span>
+										<span className={cn(`text-lg bg-white dark:bg-transparent py-1 px-2 rounded-md w-fit font-bold ml-6 -mt-7 animate__animated animate__fadeInUp delay-[200ms]`)}>{pair[1].name}</span>
 									</div>
 								</div>
 							))}
