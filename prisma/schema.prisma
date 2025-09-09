@@ -8,6 +8,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Gender {
+  M
+  F
+}
+
+enum MatchResult {
+  WIN
+  LOSS
+  DRAW
+  WO
+}
+
 model User {
   id            String    @id
   name          String
@@ -70,14 +82,312 @@ model Verification {
 }
 
 model Person {
-  id                 String   @id @default(cuid())
+  id                 String    @id @default(cuid())
   name               String
-  start_playing_date DateTime
-  userId             String   @unique
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @default(now()) @updatedAt
+  slug               String
+  image              String?
+  category           String?
+  wins               Int       @default(0)
+  defeats            Int       @default(0)
+  wos                Int       @default(0)
+  start_playing_date DateTime?
+  userId             String    @unique
+  birthdate          DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @default(now()) @updatedAt
 
-  user User @relation(fields: [userId], references: [id])
+  user               User            @relation(fields: [userId], references: [id])
+  posts              Post[]
+  gender             Gender?
+  likes              Like[]
+  comments           Comment[]
+  subscriptions      Subscription[]
+  managedTournaments Tournament[]    @relation("TournamentManagement")
+  equipment          Equipment?
+  announcements      Announcement[]
+  teacher_ratings    TeacherRating[]
+  team_members       TeamMember[]
+  ratings_given      PersonRating[]  @relation("PersonRatingRater")
+  ratings_received   PersonRating[]  @relation("PersonRatingRated")
 
   @@map("person")
+}
+
+model Post {
+  id          String   @id @default(cuid())
+  description String
+  created_at  DateTime @default(now())
+
+  author_id String
+  author    Person      @relation(fields: [author_id], references: [id])
+  images    PostImage[]
+  likes     Like[]
+  comments  Comment[]
+
+  @@map("post")
+}
+
+model PostImage {
+  id      String @id @default(cuid())
+  url     String
+  post_id String
+  post    Post   @relation(fields: [post_id], references: [id])
+
+  @@map("post_image")
+}
+
+model Like {
+  id         String   @id @default(cuid())
+  person_id  String
+  post_id    String
+  created_at DateTime @default(now())
+
+  person Person @relation(fields: [person_id], references: [id])
+  post   Post   @relation(fields: [post_id], references: [id])
+
+  @@unique([person_id, post_id])
+  @@map("like")
+}
+
+model Comment {
+  id         String   @id @default(cuid())
+  content    String
+  created_at DateTime @default(now())
+
+  person_id String
+  post_id   String
+  person    Person @relation(fields: [person_id], references: [id])
+  post      Post   @relation(fields: [post_id], references: [id])
+
+  @@map("comment")
+}
+
+model Tournament {
+  id                 String   @id @default(cuid())
+  title              String
+  description        String?
+  date               DateTime
+  arena_id           String?
+  price              Int?
+  status             String   @default("created")
+  subscription_start DateTime
+  subscription_end   DateTime
+  created_at         DateTime @default(now())
+  updated_at         DateTime @default(now()) @updatedAt
+
+  categories    Category[]           @relation("TournamentCategories")
+  info_items    TournamentInfoItem[]
+  subscriptions Subscription[]
+  slots         TournamentSlot[]
+  management    Person[]             @relation("TournamentManagement")
+  arena         Arena?               @relation(fields: [arena_id], references: [id])
+  matches       Match[]
+
+  @@map("tournament")
+}
+
+model TournamentInfoItem {
+  id            String     @id @default(cuid())
+  content       String
+  tournament_id String
+  tournament    Tournament @relation(fields: [tournament_id], references: [id])
+
+  @@map("tournament_info_item")
+}
+
+model Category {
+  id            String           @id @default(cuid())
+  name          String
+  tournaments   Tournament[]     @relation("TournamentCategories")
+  subscriptions Subscription[]
+  slots         TournamentSlot[]
+
+  @@map("category")
+}
+
+model Subscription {
+  id            String   @id @default(cuid())
+  created_at    DateTime @default(now())
+  tournament_id String
+  person_id     String
+  category_id   String
+
+  tournament Tournament @relation(fields: [tournament_id], references: [id])
+  person     Person     @relation(fields: [person_id], references: [id])
+  category   Category   @relation(fields: [category_id], references: [id])
+
+  @@unique([tournament_id, person_id, category_id])
+  @@map("subscription")
+}
+
+model TournamentSlot {
+  id            String   @id @default(cuid())
+  tournament_id String
+  category_id   String
+  created_at    DateTime @default(now())
+
+  tournament Tournament @relation(fields: [tournament_id], references: [id])
+  category   Category   @relation(fields: [category_id], references: [id])
+
+  @@map("tournament_slot")
+}
+
+model Region {
+  id     String  @id @default(cuid())
+  name   String  @unique
+  arenas Arena[]
+
+  @@map("region")
+}
+
+model Arena {
+  id        String  @id @default(cuid())
+  name      String
+  address   String
+  image_url String?
+  map_link  String?
+  latitude  Float?
+  longitude Float?
+  region_id String?
+
+  region      Region?      @relation(fields: [region_id], references: [id])
+  teachers    Teacher[]    @relation("TeacherArenas")
+  tournaments Tournament[]
+  gallery     ArenaImage[]
+  matches     Match[]
+
+  @@map("arena")
+}
+
+model ArenaImage {
+  id       String @id @default(cuid())
+  url      String
+  arena_id String
+  arena    Arena  @relation(fields: [arena_id], references: [id])
+
+  @@map("arena_image")
+}
+
+model Equipment {
+  id        String @id @default(cuid())
+  name      String
+  url       String
+  person_id String @unique
+  person    Person @relation(fields: [person_id], references: [id])
+
+  @@map("equipment")
+}
+
+model Announcement {
+  id          String              @id @default(cuid())
+  title       String
+  description String?
+  image       String?
+  person_id   String
+  validated   Boolean             @default(false)
+  gallery     AnnouncementImage[]
+  person      Person              @relation(fields: [person_id], references: [id])
+
+  @@map("announcement")
+}
+
+model AnnouncementImage {
+  id              String       @id @default(cuid())
+  url             String
+  announcement_id String
+  announcement    Announcement @relation(fields: [announcement_id], references: [id])
+
+  @@map("announcement_image")
+}
+
+model Teacher {
+  id            String          @id @default(cuid())
+  name          String
+  image         String?
+  phone         String?
+  email         String?
+  arenas        Arena[]         @relation("TeacherArenas")
+  TeacherRating TeacherRating[]
+
+  @@map("teacher")
+}
+
+model TeacherRating {
+  id         String   @id @default(cuid())
+  rating     Int
+  comment    String?
+  created_at DateTime @default(now())
+
+  person_id  String
+  teacher_id String
+
+  person  Person  @relation(fields: [person_id], references: [id])
+  teacher Teacher @relation(fields: [teacher_id], references: [id])
+
+  @@unique([person_id, teacher_id])
+  @@map("teacher_rating")
+}
+
+model Match {
+  id                    String      @id @default(cuid())
+  datetime              DateTime
+  tournament_id         String
+  arena_id              String
+  winner_team_member_id String?
+  tournament            Tournament  @relation(fields: [tournament_id], references: [id])
+  arena                 Arena       @relation(fields: [arena_id], references: [id])
+  teams                 MatchTeam[]
+  winner_team_member    TeamMember? @relation(fields: [winner_team_member_id], references: [id])
+
+  @@map("match")
+}
+
+model MatchTeam {
+  id       String @id @default(cuid())
+  match_id String
+  team_id  String
+  score    Int?
+
+  match Match @relation(fields: [match_id], references: [id])
+  team  Team  @relation(fields: [team_id], references: [id])
+
+  @@unique([match_id, team_id])
+  @@map("match_team")
+}
+
+model Team {
+  id   String  @id @default(cuid())
+  name String?
+
+  members TeamMember[]
+  matches MatchTeam[]
+
+  @@map("team")
+}
+
+model TeamMember {
+  id        String @id @default(cuid())
+  team_id   String
+  person_id String
+
+  team    Team    @relation(fields: [team_id], references: [id])
+  person  Person  @relation(fields: [person_id], references: [id])
+  matches Match[]
+
+  @@unique([team_id, person_id])
+  @@map("team_member")
+}
+
+model PersonRating {
+  id         String   @id @default(cuid())
+  rating     Int
+  created_at DateTime @default(now())
+  rater_id   String
+  rated_id   String
+
+  rater Person @relation("PersonRatingRater", fields: [rater_id], references: [id])
+  rated Person @relation("PersonRatingRated", fields: [rated_id], references: [id])
+
+  @@unique([rater_id, rated_id])
+  @@map("person_rating")
 }

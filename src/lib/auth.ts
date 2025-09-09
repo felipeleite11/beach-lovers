@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth"
 import { prismaAdapter } from "better-auth/adapters/prisma"
 import { prisma } from '@/lib/prisma'
+import { generateSlug } from "@/utils/string"
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
@@ -17,7 +18,7 @@ export const auth = betterAuth({
                     await prisma.person.create({
                         data: {
                             name: user.name,
-                            start_playing_date: new Date(),
+                            slug: generateSlug(user.name),
                             userId: user.id
                         }
                     })

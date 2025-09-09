@@ -1,4 +1,4 @@
 interface Equipment {
 	name: string
-	image: string
+	url: string
 }

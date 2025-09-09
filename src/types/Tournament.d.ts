@@ -14,7 +14,7 @@ interface Tournament {
 		end: string
 	}
 	management: Person[]
-	categories: Category[]
+	slots: Slot[]
 	arena?: Arena
 	status: 'available_subscription' | 'cancelled' | 'finished'
 	teams?: Pair[]

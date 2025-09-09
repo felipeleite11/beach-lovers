@@ -1,13 +1,25 @@
 'use client'
 
 import React from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { ExternalLink } from 'lucide-react'
-import { tournaments } from '@/storage'
+import { tournaments as tournaments2 } from '@/storage'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Button } from './ui/button'
 import Link from 'next/link'
+import { fetchTournaments } from '@/lib/api'
 
 export default function TournamentList() {
+	const { data: tournaments } = useQuery<Tournament[]>({
+		queryKey: ['get-last-tournaments'],
+		queryFn: async () => {
+			const response = await fetchTournaments()
+
+			return response
+		},
+		staleTime: 5 * 60 * 1000
+	})
+
 	function getStatusBadge(status: string) {
 		switch (status) {
 			case 'available_subscription':
@@ -21,11 +33,86 @@ export default function TournamentList() {
 		}
 	}
 
+	console.log('tournaments', tournaments)
+
 	return (
 		<div className="w-full pr-8 flex flex-col gap-6 overflow-y-auto">
 			<h1 className="font-semibold text-3xl">Torneios abertos</h1>
 
-			{tournaments.map(tournament => {
+			{tournaments2.map(tournament => {
+				const isSubscriptionAvailable = tournament.status === 'available_subscription'
+
+				return (
+					<div key={tournament.id} className="flex flex-col gap-4 border-t border-t-slate-200 dark:border-t-slate-600 pt-2">
+						<div className="flex justify-between gap-6">
+							<div className="flex flex-col gap-2">
+								<div className="flex gap-3 items-center font-semibold">
+									<Link href={`/tournament/${tournament.id}`} className="font-semibold text-xl hover:underline underline-offset-4
+									">{tournament.title}</Link>
+
+									{getStatusBadge(tournament.status)}
+								</div>
+
+								<span className="text-sm">Inscrições: R$ {tournament.price! / 100}</span>
+
+								<span className="text-sm flex gap-2">
+									Local: {tournament.arena?.name}
+									<a href="https://www.google.com/maps" target="_blank">
+										<ExternalLink size={15} className="cursor-pointer" />
+									</a>
+								</span>
+							</div>
+
+							<div className="flex flex-col items-end gap-2 group">
+								<Button
+									className="bg-orange-600 text-white cursor-pointer hover:bg-orange-500"
+									onClick={() => { }}
+									disabled={!isSubscriptionAvailable}
+								>
+									Inscrever-se
+								</Button>
+
+								{isSubscriptionAvailable && (
+									<span className="flex text-slate-400 text-xs">
+										{tournament.remaining_subscriptions} vagas
+									</span>
+								)}
+							</div>
+						</div>
+
+						<div className="flex flex-col gap-3">
+							{tournament.categories[0].subscriptions!.length > 0 ? (
+								<span className="font-semibold">Participantes ({tournament.categories[0].subscriptions!.length} inscritos)</span>
+							) : (
+								<span className="italic text-sm text-slate-400">Nenhum inscrito</span>
+							)}
+
+							<ul className="flex flex-col gap-2 max-h-36 overflow-y-auto">
+								{tournament.categories[0].subscriptions!.map(subscription => {
+									const person = subscription.person
+
+									return (
+										(
+											<li key={subscription.id}>
+												<Link href={`/person/${person.id}`} className="flex items-center gap-2 cursor-pointer hover:opacity-80 w-fit">
+													<Avatar className="w-6 h-6">
+														<AvatarImage src={person.image} />
+														<AvatarFallback>{person.name[0].toUpperCase()}</AvatarFallback>
+													</Avatar>
+
+													<span className="text-sm">{person.name}</span>
+												</Link>
+											</li>
+										)
+									)
+								})}
+							</ul>
+						</div>
+					</div>
+				)
+			})}
+
+			{tournaments?.map(tournament => {
 				const isSubscriptionAvailable = tournament.status === 'available_subscription'
 
 				return (

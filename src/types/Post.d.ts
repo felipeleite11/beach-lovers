@@ -1,9 +1,12 @@
 interface Post {
-	id: number
+	id: string
 	author: Person
-	url: string | string[]
-	content: string
-	date: string
+	images: {
+		id: string
+		url: string
+	}[]
+	description: string
+	created_at: string
 	comments?: PostComment[]
 	likes?: Like[]
 }
