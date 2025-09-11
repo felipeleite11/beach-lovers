@@ -6,6 +6,7 @@
 		"**/.DS_Store": true,
 		"**/Thumbs.db": true,
 		"**/node_modules": true,
-		"**/.next": true
+		"**/.next": true,
+		"**/generated": true
 	}
 }

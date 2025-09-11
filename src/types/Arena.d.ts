@@ -1,5 +1,5 @@
 interface Arena {
-	id: number
+	id: string
 	name: string
 	image: string
 	gallery: GalleryImage[]
@@ -20,11 +20,6 @@ interface GalleryImage {
 	url: string
 	title: string
 	description?: string
-}
-
-interface Region {
-	id: number
-	name: string
 }
 
 interface Position {

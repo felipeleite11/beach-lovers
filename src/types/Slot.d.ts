@@ -1,5 +1,5 @@
 interface Slot {
 	id: string
 	tournament: Tournament
-	category: Category
+	category_id: string
 }

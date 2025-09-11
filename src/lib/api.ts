@@ -1,12 +1,13 @@
-import { TournamentData, PersonData } from "@/types/shared"
 import axios from "axios"
+import { Tournament } from "@/types/Tournament"
+import { TournamentCreateFormInputs } from "@/app/(private)/tournament/create/page"
 
 const api = axios.create({
 	baseURL: process.env.NEXT_PUBLIC_URL
 })
 
 // Person
-export async function fetchPeople(): Promise<PersonData[]> {
+export async function fetchPeople(): Promise<Person[]> {
 	const response = await api.get<PersonData[]>('/api/person')
 
 	if (response.status !== 200) {
@@ -16,7 +17,7 @@ export async function fetchPeople(): Promise<PersonData[]> {
 	return response.data
 }
 
-export async function fetchPerson(slug: string): Promise<PersonData> {
+export async function fetchPerson(slug: string): Promise<Person> {
 	const response = await api.get<PersonData>(`/api/person/${slug}`)
 	
 	if (response.status !== 200) {
@@ -27,11 +28,43 @@ export async function fetchPerson(slug: string): Promise<PersonData> {
 }
 
 // Tournament
-export async function fetchTournaments(): Promise<TournamentData[]> {
-	const response = await api.get<TournamentData[]>('/api/tournament')
+export async function fetchTournaments(): Promise<Tournament[]> {
+	const response = await api.get<Tournament[]>('/api/tournament')
 
 	if (response.status !== 200) {
 		throw new Error('Erro ao buscar torneios')
+	}
+
+	return response.data
+}
+
+export async function createTournament(data: TournamentCreateFormInputs): Promise<Tournament> {
+	const response = await api.post<Tournament>('/api/tournament', data)
+
+	if (response.status !== 200) {
+		throw new Error('Erro ao cadastrar torneio')
+	}
+
+	return response.data
+}
+
+// Arena
+export async function fetchArenas(): Promise<Arena[]> {
+	const response = await api.get<Arena[]>('/api/arena')
+
+	if (response.status !== 200) {
+		throw new Error('Erro ao buscar arenas')
+	}
+
+	return response.data
+}
+
+// Category
+export async function fetchCategories(): Promise<Category[]> {
+	const response = await api.get<Category[]>('/api/category')
+
+	if (response.status !== 200) {
+		throw new Error('Erro ao buscar categorias')
 	}
 
 	return response.data

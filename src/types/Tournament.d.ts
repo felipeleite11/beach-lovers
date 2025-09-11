@@ -1,21 +1,23 @@
+import { Arena, Person } from "./PrismaTypes"
+
 interface Tournament {
-	id: number
+	id?: string
 	title: string
 	description?: string
-	image?: string
+	image?: File | null
 	video?: string
-	price?: number
+	price?: string
 	datetime: string
 	amount?: number // in cents
 	offered_subscriptions?: number
 	remaining_subscriptions?: number
-	subscription_period: {
-		start: string
-		end: string
-	}
-	management: Person[]
-	slots: Slot[]
+	subscription_start: string
+	subscription_end: string
+	categories?: Category[]
+	subscriptions?: Subscription[]
+	management?: Person[]
+	slots?: Slot[]
 	arena?: Arena
-	status: 'available_subscription' | 'cancelled' | 'finished'
+	status?: 'created' | 'available_subscription' | 'cancelled' | 'finished'
 	teams?: Pair[]
 }

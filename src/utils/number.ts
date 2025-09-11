@@ -18,3 +18,9 @@ export function getDuration(earlierDate: Date) {
 		}
 	)
 }
+
+export function extractNumbers(text: string) {
+	const numbers = text.match(/\d+/g)
+  
+	return numbers ? numbers.join('') : ''
+}

@@ -1,4 +1,4 @@
-interface Category {
+interface Region {
 	id: string
 	name: string
 }

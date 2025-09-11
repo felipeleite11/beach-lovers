@@ -9,3 +9,25 @@ export function generateSlug(text: string) {
 		.replace(/\s+/g, '-')            // substitui espaços por hífen
 		.replace(/-+/g, '-')
 }
+
+interface PluralizeOptions {
+	emptyTerm?: string
+	singularTerm: string
+	pluralTerm?: string
+}
+
+export function pluralize(array: any[], options: PluralizeOptions) {
+	const length = array.length
+	
+	let term = options.emptyTerm || 'Nenhum'
+
+	if(length === 1) {
+		term = options.singularTerm
+	}
+
+	if(length > 1) {
+		term = options.pluralTerm || `${options.singularTerm}s`
+	}
+
+	return `${length} ${term}`
+}
