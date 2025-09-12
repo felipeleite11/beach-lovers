@@ -55,10 +55,8 @@ export default function TournamentList() {
 		}
 	}
 
-	console.log('tournaments[0]', tournaments?.[0])
-
 	return (
-		<div className="w-full pr-8 flex flex-col gap-6 overflow-y-auto">
+		<div className="w-full xl:pr-8 flex flex-col gap-6 overflow-y-auto">
 			<h1 className="font-semibold text-3xl">Torneios abertos</h1>
 
 			{tournaments?.map((tournament, idx) => {
@@ -98,7 +96,7 @@ export default function TournamentList() {
 										<Button
 											className="bg-orange-600 text-white cursor-pointer hover:bg-orange-500"
 											onClick={() => {
-												router.push(`/tournament/subscription/${tournament.id}`)
+												router.push(`/tournament/${tournament.id}/subscribe`)
 											}}
 											disabled={!isSubscriptionAvailable}
 										>
@@ -127,7 +125,7 @@ export default function TournamentList() {
 									return (
 										<Sheet key={category.id}>
 											<SheetTrigger>
-												<div className="flex flex-col gap-1 items-center border border-slate-400 dark:border-slate-600 rounded-md w-fit p-2 hover:bg-slate-100 dark:hover:bg-slate-900 cursor-pointer transition-all">
+												<div className="flex flex-col gap-1 items-center border border-slate-400 dark:border-slate-600 rounded-md w-fit py-2 px-3 hover:bg-slate-100 dark:hover:bg-slate-900 cursor-pointer transition-all">
 													<span className="flex items-center gap-2">
 														{category.name.toLowerCase().includes('masc') ? (
 															<Mars size={16} />
@@ -168,7 +166,7 @@ export default function TournamentList() {
 																		return (
 																			(
 																				<li key={subscription.id}>
-																					<Link href={`/person/${person.id}`} className="flex items-center gap-2 cursor-pointer hover:opacity-80 w-fit text-slate-300">
+																					<Link href={`/person/${person.id}`} className="flex items-center gap-2 cursor-pointer hover:opacity-80 w-fit text-slate-700 dark:text-slate-300">
 																						<Avatar className="w-8 h-8">
 																							<AvatarImage src={person.image} />
 																							<AvatarFallback>{person.name[0].toUpperCase()}</AvatarFallback>

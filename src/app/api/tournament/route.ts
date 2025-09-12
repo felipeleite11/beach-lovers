@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
 			throw new Error('Pessoa não encontrada.')
 		}
 
-		const isSubscriptionsStarted = isAfter(new Date(subscription_start), new Date())
+		const isSubscriptionsStarted = isAfter(new Date(), new Date(subscription_start))
 		
 		const response = await prisma.tournament.create({
 			data: {

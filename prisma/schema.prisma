@@ -166,6 +166,7 @@ model Tournament {
   id                 String   @id @default(cuid())
   title              String
   description        String?
+  image              String?
   date               DateTime
   arena_id           String?
   price              Int?

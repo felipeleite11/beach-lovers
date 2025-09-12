@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { tournaments } from '@/storage'
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -13,6 +12,8 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Tournament } from '@/types/Tournament'
+import { fetchTournamentById } from '@/lib/api'
 
 export default function TournamentHeader() {
 	const { id } = useParams()
@@ -20,9 +21,9 @@ export default function TournamentHeader() {
 	const { data: tournament } = useQuery<Tournament>({
 		queryKey: ['find-tournament-by-id'],
 		queryFn: async () => {
-			const foundTournament = tournaments.find(tournament => tournament.id === +id!)
+			const foundTournament = await fetchTournamentById(String(id))
 
-			return foundTournament!
+			return foundTournament
 		}
 	})
 
@@ -32,13 +33,15 @@ export default function TournamentHeader() {
 		)
 	}
 
+	console.log('tournament', tournament)
+
 	return (
 		<div
-			className="w-full h-56 2xl:h-80 transition-all bg-cover bg-no-repeat bg-center rounded-lg relative"
+			className="w-full h-56 2xl:h-80 transition-all bg-cover bg-no-repeat bg-center rounded-lg relative animate__animated animate__fadeInUp animate__faster"
 			style={{ backgroundImage: `url(${tournament.image})` }}
 		>
 			<div className="bg-slate-800/30 absolute top-0 left-0 w-full h-full flex flex-col gap-6 p-8">
-				<h1 className="text-xl 2xl:text-3xl font-bold text-white bg-black/60 p-4 rounded-md w-fit shadow-lg">{tournament.title}</h1>
+				<h1 className="text-xl 2xl:text-3xl font-bold text-white bg-slate-900/80 p-4 rounded-md w-fit shadow-lg">{tournament.title}</h1>
 
 				<div className="flex gap-24 items-end -bottom-8 absolute">
 					{/* Public options */}

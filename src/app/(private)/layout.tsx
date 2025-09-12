@@ -4,6 +4,8 @@ import { redirect } from "next/navigation"
 import MainMenu from "@/components/MainMenu"
 import NavbarAuth from "@/components/NavbarAuth"
 import { auth } from "@/lib/auth"
+import { Sheet } from "@/components/ui/sheet"
+import { GlobalContextProvider } from "@/contexts/GlobalContext"
 
 export default async function PrivateLayout({ children }: { children: ReactNode }) {
 	const session = await auth.api.getSession({
@@ -15,14 +17,18 @@ export default async function PrivateLayout({ children }: { children: ReactNode 
 	}
 
 	return (
-		<div className="grid grid-cols-[18rem_auto] grid-rows-[auto_1fr] min-h-screen">
-			<NavbarAuth />
+		<div className="flex flex-col xl:grid xl:grid-cols-[18rem_auto] xl:grid-rows-[auto_1fr] min-h-screen">
+			<GlobalContextProvider>
+				<Sheet>
+					<NavbarAuth user={session.user} />
 
-			<MainMenu />
-			
-			<main className="flex flex-col pl-10 pt-8 pr-8 pb-8">
-				{children}
-			</main>
+					<MainMenu />
+				</Sheet>
+				
+				<main className="flex flex-col pl-10 pt-8 pr-8 pb-8">
+					{children}
+				</main>
+			</GlobalContextProvider>
 		</div>
 	)
 }

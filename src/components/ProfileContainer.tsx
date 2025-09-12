@@ -1,5 +1,6 @@
 import React from 'react'
-import { LogOut, Settings, User, User2Icon, UserCircle } from 'lucide-react'
+import { User } from 'better-auth'
+import { LogOut, Settings, User2Icon } from 'lucide-react'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -10,32 +11,49 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Link from 'next/link'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
-import { user } from '@/storage'
+import { useRouter } from 'next/navigation'
+import { authClient } from '@/lib/auth.client'
 
-export default function ProfileContainer() {
+interface NavbarAuthProps {
+	user: User
+}
+
+export default function ProfileContainer({ user }: NavbarAuthProps) {
+	const router = useRouter()
+
+	async function handleSignOut() {
+		await authClient.signOut({
+			fetchOptions: {
+				onSuccess: () => {
+					router.replace('/')
+				}
+			}
+		})
+	}
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger>
 				<div className="flex items-center gap-2 dark:hover:bg-slate-900 h-13 px-3 cursor-pointer">
-					<Avatar className="w-7 h-7">
-						<AvatarImage src={user.image} />
+					<Avatar className="w-10 h-10">
+						{user.image && <AvatarImage src={user.image} />}
 						<AvatarFallback>{user.name[0].toUpperCase()}</AvatarFallback>
 					</Avatar>
 
-					<span>Felipe Leite</span>
+					<span>{user.name}</span>
 				</div>
 			</DropdownMenuTrigger>
 
 			<DropdownMenuContent>
 				<DropdownMenuLabel>
-					<Link href="/" className="hover:opacity-80 w-full flex gap-2 items-center">
+					<Link href="/profile" className="hover:opacity-80 w-full flex gap-2 items-center">
 						<User2Icon size={16} />
 						Minha conta
 					</Link>
 				</DropdownMenuLabel>
 
 				<DropdownMenuItem>
-					<Link href="/" className="hover:opacity-80 w-full flex gap-2 items-center">
+					<Link href="/settings" className="hover:opacity-80 w-full flex gap-2 items-center">
 						<Settings size={16} />
 						Configurações
 					</Link>
@@ -43,11 +61,11 @@ export default function ProfileContainer() {
 
 				<DropdownMenuSeparator />
 
-				<DropdownMenuItem>
-					<Link href="/" className="hover:opacity-80 w-full flex gap-2 items-center">
+				<DropdownMenuItem className="cursor-pointer" onClick={handleSignOut}>
+					<div className="hover:opacity-80 w-full flex gap-2 items-center">
 						<LogOut size={16} />
 						Sair
-					</Link>
+					</div>
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

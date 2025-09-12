@@ -86,7 +86,7 @@ const posts: Post[] = [
 
 export default function Timeline() {
 	return (
-		<ul className="w-full divide-y divide-gray-200/80 border-l-4 border-l-slate-200 dark:border-l-slate-700 px-16 overflow-y-auto">
+		<ul className="w-full divide-y divide-gray-200/80 xl:border-l-4 xl:border-l-slate-200 xl:dark:border-l-slate-700 xl:px-16 overflow-y-auto">
 			{posts.map(post => (
 				<li key={post.id} className="flex flex-col gap-4 py-6">
 					<div className="flex gap-4 justify-between items-center">
@@ -107,7 +107,7 @@ export default function Timeline() {
 							<CarouselContent>
 								{post.url.map(item => (
 									<CarouselItem key={item}>
-										<Image alt="" width={1000} height={800} src={item} className="w-[29vw] h-[29vw] object-cover rounded-sm" />
+										<Image alt="" width={1000} height={800} src={item} className="w-full xl:w-[29vw] xl:h-[29vw] object-cover rounded-sm" />
 									</CarouselItem>
 								))}
 							</CarouselContent>
@@ -116,7 +116,7 @@ export default function Timeline() {
 							<CarouselNext className="cursor-pointer" />
 						</Carousel>
 					) : (
-						<Image alt="" width={1000} height={800} src={String(post.url)} className="w-[29vw] h-[29vw] object-cover rounded-sm" />
+						<Image alt="" width={1000} height={800} src={String(post.url)} className="w-full xl:w-[29vw] xl:h-[29vw] object-cover rounded-sm" />
 					)}
 
 					<div>

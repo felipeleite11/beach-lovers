@@ -6,7 +6,9 @@ export default async function PrivateLayout({ children }: { children: ReactNode 
 		<div className="flex flex-col gap-16 pb-16">
 			<TournamentHeader />
 
-			{children}
+			<div className="animate__animated animate__fadeInUp animate__faster delay-600">
+				{children}
+			</div>
 		</div>
 	)
 }

@@ -18,6 +18,8 @@ import { toast } from "sonner"
 import z from "zod"
 import { queryClient } from "@/components/Providers"
 
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
+
 const tournamentCreateSchema = z
 	.object({
 		title: z.string().min(1, "Informe o nome do torneio."),
@@ -51,7 +53,13 @@ const tournamentCreateSchema = z
 				const [d, m, y] = val.split('/')
 				return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`
 			}),
-		image: z.file('Envie a imagem do torneio'),
+		image: z.any()
+			.refine(val => val instanceof File, 'Anexe uma imagem')
+			.refine(file => file?.size <= 6 * 1024 * 1024, 'A imagem deve ter até 6MB')
+			.refine(
+				file => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+				'Envie uma imagem em formato .png, .jpg, .jpeg ou .webp'
+			),
 		categories: z.array(z.string())
 			.refine(value => value.some(item => item), {
 				message: 'Selecione pelo menos uma categoria.'
@@ -112,14 +120,16 @@ export default function Create() {
 	})
 
 	return (
-		<div>
-			<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col xl:grid xl:grid-cols-[1.4fr_2fr] gap-8">
+		<div className="flex flex-col gap-6">
+			<h1 className="font-semibold text-xl">Novo torneio</h1>
+
+			<form onSubmit={handleSubmit((data: TournamentCreateFormInputs) => onSubmit(data))} className="flex flex-col xl:grid xl:grid-cols-[1.4fr_2fr] gap-8">
 				<Controller
 					name="image"
 					control={control}
 					render={({ field }) => (
 						<div className="space-y-2">
-							<Upload id="image" onFileChange={field.onChange}>
+							<Upload id="image" onFileChange={field.onChange} acceptedFormats={ACCEPTED_IMAGE_TYPES}>
 								{({ id }) => (
 									<>
 										<UploadViewer file={field.value} />
@@ -133,7 +143,7 @@ export default function Create() {
 							</Upload>
 
 							{errors.image && (
-								<p className="text-sm text-red-500">{errors.image.message}</p>
+								<p className="text-sm text-red-500">{errors.image.message as any}</p>
 							)}
 						</div>
 					)}

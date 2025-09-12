@@ -1,30 +1,25 @@
 'use client'
 
-import { useEffect, useState } from "react"
 import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
-import { tournaments } from "@/storage"
+import { useParams } from "next/navigation"
 import { User } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Tournament as TournamentType } from "@/types/Tournament"
+import { useQuery } from "@tanstack/react-query"
+import { fetchTournamentById } from "@/lib/api"
 
 export default function Tournament() {
 	const { id } = useParams()
 
-	const router = useRouter()
+	const { data: tournament } = useQuery<TournamentType>({
+		queryKey: ['find-tournament-by-id'],
+		queryFn: async () => {
+			const foundTournament = await fetchTournamentById(String(id))
 
-	const [tournament, setTournament] = useState<Tournament | null>(null)
-
-	useEffect(() => {
-		const selectedTournament = tournaments.find(trnm => trnm.id === +id!)
-
-		if (!selectedTournament) {
-			router.push('/')
-			return
+			return foundTournament
 		}
-
-		setTournament(selectedTournament)
-	}, [])
+	})
 
 	if (!tournament) {
 		return (
@@ -63,9 +58,9 @@ export default function Tournament() {
 				<div className="flex flex-col gap-8">
 					<div className="flex flex-col gap-3 text-sm 2xl:text-sm rounded-md">
 						<span>Local: {tournament.arena?.name} - {tournament.arena?.address}</span>
-						<span>Data e horario: {tournament.datetime}</span>
-						{tournament.price && <span>Valor por participante: R$ {tournament.price / 100}</span>}
-						{tournament.offered_subscriptions && <span>Vagas: {tournament.offered_subscriptions} pessoas ({tournament.offered_subscriptions / 2} duplas)</span>}
+						<span>Data e horário: {tournament.datetime}</span>
+						{tournament.price && <span>Valor por participante: R$ {+tournament.price / 100}</span>}
+						{/* {tournament.offered_subscriptions && <span>Vagas: {tournament.offered_subscriptions} pessoas ({tournament.offered_subscriptions / 2} duplas)</span>} */}
 					</div>
 
 					<div className="flex flex-col gap-4 text-sm border-t border-slate-800 pt-5">
@@ -75,7 +70,7 @@ export default function Tournament() {
 							{tournament.description}
 						</div>
 
-						{tournament.video && (
+						{/* {tournament.video && (
 							<div className="h-[24rem] w-[40rem]">
 								<iframe
 									src={tournament.video}
@@ -86,14 +81,14 @@ export default function Tournament() {
 									allowFullScreen
 								/>
 							</div>
-						)}
+						)} */}
 					</div>
 				</div>
 
 				<div className="flex flex-col gap-5 border-l-2 border-l-black/10 dark:border-l-white/10 pl-4 py-2">
 					<h2 className="font-semibold text-lg">Organização</h2>
 
-					{tournament.management.map(person => (
+					{tournament.management?.map(person => (
 						<Link key={person.id} href={`/profile/${person.slug}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
 							{person.image ? (
 								<Avatar className="w-12 h-12 2xl:w-14 2xl:h-14">
@@ -108,7 +103,7 @@ export default function Tournament() {
 
 							<div className="flex flex-col gap-1">
 								<span className="font-semibold text-md">{person.name}</span>
-								{person.status?.tournament_management && <span className="text-slate-400 text-xs">Organizou outros {person.status.tournament_management} torneios</span>}
+								{/* {person.status?.tournament_management && <span className="text-slate-400 text-xs">Organizou outros {person.status.tournament_management} torneios</span>} */}
 							</div>
 						</Link>
 					))}

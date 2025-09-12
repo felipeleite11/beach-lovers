@@ -8,7 +8,7 @@ const api = axios.create({
 
 // Person
 export async function fetchPeople(): Promise<Person[]> {
-	const response = await api.get<PersonData[]>('/api/person')
+	const response = await api.get<Person[]>('/api/person')
 
 	if (response.status !== 200) {
 		throw new Error('Erro ao buscar pessoas')
@@ -18,7 +18,29 @@ export async function fetchPeople(): Promise<Person[]> {
 }
 
 export async function fetchPerson(slug: string): Promise<Person> {
-	const response = await api.get<PersonData>(`/api/person/${slug}`)
+	const response = await api.get<Person>(`/api/person/${slug}`)
+	
+	if (response.status !== 200) {
+		throw new Error('Erro ao buscar pessoa')
+	}
+
+	return response.data
+}
+
+export async function updatePerson(person: Partial<Person>): Promise<Person> {
+	const { id, ...props } = person
+
+	const response = await api.put<Person>(`/api/person/${id}`, props)
+	
+	if (response.status !== 200) {
+		throw new Error('Erro ao atualizar pessoa')
+	}
+
+	return response.data
+}
+
+export async function fetchPersonByUserId(userId: string): Promise<Person> {
+	const response = await api.get<Person>(`/api/person/by_user/${userId}`)
 	
 	if (response.status !== 200) {
 		throw new Error('Erro ao buscar pessoa')
@@ -30,6 +52,16 @@ export async function fetchPerson(slug: string): Promise<Person> {
 // Tournament
 export async function fetchTournaments(): Promise<Tournament[]> {
 	const response = await api.get<Tournament[]>('/api/tournament')
+
+	if (response.status !== 200) {
+		throw new Error('Erro ao buscar torneios')
+	}
+
+	return response.data
+}
+
+export async function fetchTournamentById(id: string): Promise<Tournament> {
+	const response = await api.get<Tournament>(`/api/tournament/${id}`)
 
 	if (response.status !== 200) {
 		throw new Error('Erro ao buscar torneios')

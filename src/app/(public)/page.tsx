@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { authClient, getBetterAuthErrorMessage } from "@/lib/auth.client"
 import { toast } from "sonner"
+import { useQuery } from "@tanstack/react-query"
 
 type LoginFormInputs = {
 	email: string
@@ -29,11 +30,11 @@ export default function SignIn() {
 		await authClient.signIn.email({
 			email: data.email,
 			password: data.password,
-			callbackURL: '/home'
+			callbackURL: '/check_profile'
 		}, {
 			onRequest: () => {},
 			onSuccess: () => {
-				router.replace('/home')
+				router.replace('/check_profile')
 			},
 			onError: (ctx) => {
 				const message = getBetterAuthErrorMessage(ctx.error.code)
