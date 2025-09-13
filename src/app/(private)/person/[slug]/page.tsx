@@ -12,14 +12,14 @@ import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogHeader, Dialog
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function () {
-	const { id } = useParams()
+	const { slug } = useParams<{ slug: string }>()
 
 	const [openImage, setOpenImage] = useState<Post | null>(null)
 
 	const { data } = useQuery({
 		queryKey: ['get-person-by-id'],
 		queryFn: async () => {
-			const person = people.find(person => person.id === +id!)
+			const person = people.find(person => person.id === slug)
 
 			return person
 		}

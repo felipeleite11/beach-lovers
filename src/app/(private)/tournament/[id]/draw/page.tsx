@@ -12,16 +12,17 @@ import { Button } from "@/components/ui/button"
 import { Play, RotateCw } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { Tournament } from "@/types/Tournament"
 
 export default function Draw() {
-	const { id } = useParams()
+	const { id } = useParams<{ id: string }>()
 
 	const router = useRouter()
 
 	const [isSubscriptionsOk, setIsSubscriptionsOk] = useState(false)
 	const [drawnPairs, setDrawnPairs] = useState<null | Pair[]>(null)
 
-	const { data: tournament } = useQuery({
+	const { data: tournament } = useQuery<Tournament>({
 		queryKey: ['find-tournament-by-id'],
 		queryFn: async () => {
 			const foundTournament = tournaments.find(tournament => tournament.id === +id!)
@@ -68,7 +69,7 @@ export default function Draw() {
 	}
 
 	function drawPairs() {
-		let people = tournament!.categories[0].subscriptions!.map(subscription => subscription.person)
+		let people = tournament!.subscriptions!.map(subscription => subscription.person)
 
 		people = shuffle(people)
 
@@ -83,7 +84,7 @@ export default function Draw() {
 
 	useEffect(() => {
 		if (tournament) {
-			const validationResult = validateSubscriptionsList(tournament.categories[0]?.subscriptions!)
+			const validationResult = validateSubscriptionsList(tournament.subscriptions!)
 
 			setIsSubscriptionsOk(validationResult)
 		}
@@ -95,7 +96,7 @@ export default function Draw() {
 		)
 	}
 
-	const subscribedPeople = shuffle(tournament.categories[0].subscriptions?.map(subscription => subscription.person)!)
+	const subscribedPeople = shuffle(tournament.subscriptions?.map(subscription => subscription.person)!)
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -123,7 +124,7 @@ export default function Draw() {
 
 						<div className="flex flex-wrap relative ml-4">
 							{subscribedPeople?.map((person, idx) => (
-								<Link href={`/person/${person.id}`} key={person.id} className="flex flex-col items-center gap-1 group">
+								<Link href={`/person/${person.slug}`} key={person.id} className="flex flex-col items-center gap-1 group">
 									<Avatar className={cn(`w-24 h-24 -ml-4 animate__animated animate__fadeInUp delay-${idx * 100} group-hover:-mt-4 transition-all cursor-pointer`)}>
 										<AvatarImage src={person.image} className="object-cover w-full" />
 										<AvatarFallback>{person.name[0].toUpperCase()}</AvatarFallback>

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma"
-import { NextRequest } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 
 export async function GET(
 	request: NextRequest,
@@ -32,6 +32,40 @@ export async function GET(
 
 		return Response.json(response)
 	} catch (error) {
+		return Response.json(
+			{ error: 'Erro interno do servidor' },
+			{ status: 500 }
+		)
+	}
+}
+
+export async function PUT(
+	req: NextRequest, 
+	{ params }: { params: Promise<{ slug: string }> }
+) {
+	try {
+		const { slug } = await params
+		const body = await req.json()
+
+		const { name, birthdate, gender } = body
+
+		if (!slug) {
+			return NextResponse.json({ error: 'ID é obrigatório' }, { status: 400 })
+		}
+
+		const response = await prisma.person.update({
+			where: { slug },
+			data: {
+				...(name && { name }),
+				...(birthdate && { birthdate }),
+				...(gender && { gender })
+			}
+		})
+
+		return Response.json(response)
+	} catch (error) {
+		console.log(error)
+
 		return Response.json(
 			{ error: 'Erro interno do servidor' },
 			{ status: 500 }

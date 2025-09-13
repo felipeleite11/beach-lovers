@@ -166,7 +166,7 @@ export default function TournamentList() {
 																		return (
 																			(
 																				<li key={subscription.id}>
-																					<Link href={`/person/${person.id}`} className="flex items-center gap-2 cursor-pointer hover:opacity-80 w-fit text-slate-700 dark:text-slate-300">
+																					<Link href={`/person/${person.slug}`} className="flex items-center gap-2 cursor-pointer hover:opacity-80 w-fit text-slate-700 dark:text-slate-300">
 																						<Avatar className="w-8 h-8">
 																							<AvatarImage src={person.image} />
 																							<AvatarFallback>{person.name[0].toUpperCase()}</AvatarFallback>

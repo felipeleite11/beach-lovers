@@ -1,6 +1,6 @@
 import axios from "axios"
 import { Tournament } from "@/types/Tournament"
-import { TournamentCreateFormInputs } from "@/app/(private)/tournament/create/page"
+import { TournamentCreateFormInputs } from "@/app/(private)/tournament/create/new/page"
 
 const api = axios.create({
 	baseURL: process.env.NEXT_PUBLIC_URL
@@ -28,9 +28,13 @@ export async function fetchPerson(slug: string): Promise<Person> {
 }
 
 export async function updatePerson(person: Partial<Person>): Promise<Person> {
-	const { id, ...props } = person
+	const { slug, ...props } = person
 
-	const response = await api.put<Person>(`/api/person/${id}`, props)
+	const response = await api.put<Person>(`/api/person/${slug}`, {
+		...props,
+		birthdate: props.birthdate ? new Date(props.birthdate) : undefined,
+		start_playing_date: props.start_playing_date ? new Date(props.start_playing_date) : undefined
+	})
 	
 	if (response.status !== 200) {
 		throw new Error('Erro ao atualizar pessoa')

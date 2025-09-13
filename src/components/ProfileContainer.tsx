@@ -48,7 +48,7 @@ export default function ProfileContainer({ user }: NavbarAuthProps) {
 				<DropdownMenuLabel>
 					<Link href="/profile" className="hover:opacity-80 w-full flex gap-2 items-center">
 						<User2Icon size={16} />
-						Minha conta
+						Meu perfil
 					</Link>
 				</DropdownMenuLabel>
 

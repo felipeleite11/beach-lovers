@@ -20,7 +20,7 @@ const menuContent = (
 				<AccordionContent className="px-3 pb-2 pl-7">
 					<ul>
 						<li>
-							<Link href="/tournament/create" className="p-2 rounded-md hover:bg-white/10 flex gap-2 items-center">
+							<Link href="/tournament/create/new" className="p-2 rounded-md hover:bg-white/10 flex gap-2 items-center">
 								<Plus size={16} />
 								Criar um torneio
 							</Link>

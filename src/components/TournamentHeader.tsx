@@ -16,7 +16,7 @@ import { Tournament } from '@/types/Tournament'
 import { fetchTournamentById } from '@/lib/api'
 
 export default function TournamentHeader() {
-	const { id } = useParams()
+	const { id } = useParams<{ id: string }>()
 
 	const { data: tournament } = useQuery<Tournament>({
 		queryKey: ['find-tournament-by-id'],

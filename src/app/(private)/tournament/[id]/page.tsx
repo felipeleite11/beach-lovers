@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query"
 import { fetchTournamentById } from "@/lib/api"
 
 export default function Tournament() {
-	const { id } = useParams()
+	const { id } = useParams<{ id: string }>()
 
 	const { data: tournament } = useQuery<TournamentType>({
 		queryKey: ['find-tournament-by-id'],

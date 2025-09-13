@@ -45,6 +45,26 @@ export function GlobalContextProvider({ children }: GlobalContextProviderProps) 
 		getSession()
 	}, [])
 
+	useEffect(() => {
+		async function getPerson() {
+			if (user?.id) {
+				const person = await fetchPersonByUserId(user.id)
+
+				setPerson(person)
+
+				const isProfileIncomplete = person && !(person.birthdate && person.gender && person.start_playing_date)
+
+				if (isProfileIncomplete) {
+					router.push(`/profile?completion=1`)
+				} else {
+					redirect('/home')
+				}
+			}
+		}
+
+		getPerson()
+	}, [user])
+
 	return (
 		<GlobalContext.Provider value={{
 			user,

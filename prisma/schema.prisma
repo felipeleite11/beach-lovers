@@ -84,7 +84,7 @@ model Verification {
 model Person {
   id                 String    @id @default(cuid())
   name               String
-  slug               String
+  slug               String    @unique
   image              String?
   category           String?
   wins               Int       @default(0)

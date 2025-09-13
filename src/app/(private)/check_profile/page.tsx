@@ -34,7 +34,7 @@ export default function CheckProfile() {
 	useEffect(() => {
 		interval = setInterval(() => {
 			setProgress(old => old < 100 ? old + 1 : 0)
-		}, 20)
+		}, 60)
 
 		return () => {
 			clearInterval(interval)

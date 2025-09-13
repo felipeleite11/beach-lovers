@@ -13,14 +13,14 @@ import { fetchPerson } from '@/lib/api'
 import { calculateAge, getDuration } from '@/utils/number'
 
 export default function () {
-	const { slug } = useParams()
+	const { slug } = useParams<{ slug: string }>()
 
 	const [openImage, setOpenImage] = useState<Post | null>(null)
 
 	const { data } = useQuery({
 		queryKey: ['get-person-by-slug', slug],
 		queryFn: async () => {
-			const response = await fetchPerson(slug as string)
+			const response = await fetchPerson(slug)
 
 			return response
 		},
