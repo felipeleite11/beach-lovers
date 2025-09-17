@@ -18,4 +18,5 @@ interface Person {
 	gender?: 'M' | 'F'
 	equipment?: Equipment
 	posts?: Post[]
+	user?: User
 }

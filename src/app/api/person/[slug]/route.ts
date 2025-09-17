@@ -19,7 +19,8 @@ export async function GET(
 					include: {
 						images: true
 					}
-				}
+				},
+				user: true
 			}
 		})
 
@@ -61,6 +62,8 @@ export async function PUT(
 				...(gender && { gender })
 			}
 		})
+
+		console.log('response', response)
 
 		return Response.json(response)
 	} catch (error) {

@@ -1,4 +1,4 @@
-import { differenceInYears, Duration, formatDuration, intervalToDuration } from "date-fns"
+import { differenceInYears, formatDuration, intervalToDuration } from "date-fns"
 import { ptBR } from 'date-fns/locale'
 
 export function calculateAge(birthdate: Date) {

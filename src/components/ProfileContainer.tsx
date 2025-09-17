@@ -5,7 +5,6 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -45,12 +44,12 @@ export default function ProfileContainer({ user }: NavbarAuthProps) {
 			</DropdownMenuTrigger>
 
 			<DropdownMenuContent>
-				<DropdownMenuLabel>
+				<DropdownMenuItem>
 					<Link href="/profile" className="hover:opacity-80 w-full flex gap-2 items-center">
 						<User2Icon size={16} />
 						Meu perfil
 					</Link>
-				</DropdownMenuLabel>
+				</DropdownMenuItem>
 
 				<DropdownMenuItem>
 					<Link href="/settings" className="hover:opacity-80 w-full flex gap-2 items-center">

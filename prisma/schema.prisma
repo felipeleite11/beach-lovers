@@ -303,6 +303,7 @@ model AnnouncementImage {
 
 model Teacher {
   id            String          @id @default(cuid())
+  slug          String?
   name          String
   image         String?
   phone         String?

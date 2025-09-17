@@ -16,6 +16,7 @@ import 'leaflet/dist/leaflet.css'
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { AvatarImage } from "@radix-ui/react-avatar"
 import { arenas } from "@/storage"
+import Link from "next/link"
 
 const availableRegions = [
 	{ value: '1', text: 'Augusto Montenegro / Icoaraci' },
@@ -98,11 +99,7 @@ function ArenaContainer({ arena }: { arena?: Arena }) {
 
 	return (
 		<div className="flex flex-col gap-4 text-sm mt-4 pb-8 mr-8">
-			<div className="flex gap-4 items-end">
-				<Image src={arena.image} alt={arena.name} width={300} height={100} className="object-cover h-16 w-16 rounded-md" />
-
-				<h2 className="text-xl font-semibold">{arena.name}</h2>
-			</div>
+			<h2 className="text-xl font-semibold">{arena.name}</h2>
 
 			<div className="flex gap-12">
 				<div className="flex flex-col gap-4 mt-4">
@@ -191,12 +188,14 @@ function ArenaContainer({ arena }: { arena?: Arena }) {
 				<ul className="flex gap-12 flex-wrap">
 					{arena.teachers?.map(teacher => (
 						<li key={teacher.id} className="flex flex-col justify-center gap-3">
-							<Avatar className="w-24 h-24">
-								<AvatarImage src={teacher.image} className="object-cover w-full" />
-								<AvatarFallback>{teacher.name[0].toUpperCase()}</AvatarFallback>
-							</Avatar>
+							<Link href={`/teacher/${teacher.slug}`}>
+								<Avatar className="w-24 h-24">
+									<AvatarImage src={teacher.image} className="object-cover w-full" />
+									<AvatarFallback>{teacher.name[0].toUpperCase()}</AvatarFallback>
+								</Avatar>
 
-							<span className="font-semibold">{teacher.name}</span>
+								<span className="font-semibold">{teacher.name}</span>
+							</Link>
 						</li>
 					))}
 				</ul>
