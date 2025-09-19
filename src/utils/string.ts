@@ -16,8 +16,16 @@ interface PluralizeOptions {
 	pluralTerm?: string
 }
 
-export function pluralize(array: any[], options: PluralizeOptions) {
-	const length = array.length
+export function pluralize(data: any[] | number | undefined, options: PluralizeOptions) {
+	let length = 0
+
+	if(!data) {
+		length = 0
+	} else if(Array.isArray(data)) {
+		length = data.length
+	} else if(!isNaN(data) && isFinite(data)){
+		length = data
+	}
 	
 	let term = options.emptyTerm || 'Nenhum'
 

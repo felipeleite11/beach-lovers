@@ -20,7 +20,7 @@ export default async function PrivateLayout({ children }: { children: ReactNode 
 		<div className="flex flex-col xl:grid xl:grid-cols-[18rem_auto] xl:grid-rows-[auto_1fr] min-h-screen">
 			<GlobalContextProvider>
 				<Sheet>
-					<NavbarAuth user={session.user} />
+					<NavbarAuth />
 
 					<MainMenu />
 				</Sheet>

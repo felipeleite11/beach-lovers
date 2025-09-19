@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
-import { ArrowBigDownDash, ArrowBigUpDash, Heart, Medal, MessageCircle, OctagonX, Volleyball } from 'lucide-react'
+import { ArrowBigDownDash, ArrowBigUpDash, Heart, MessageCircle, OctagonX, Volleyball } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useQuery } from '@tanstack/react-query'
@@ -11,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { fetchPerson } from '@/lib/api'
 import { calculateAge, getDuration } from '@/utils/number'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
+import { pluralize } from '@/utils/string'
 
 export default function PersonProfile() {
 	const { slug } = useParams<{ slug: string }>()
@@ -20,8 +21,6 @@ export default function PersonProfile() {
 		queryFn: async () => {
 			const person = await fetchPerson(slug)
 			
-			console.log('person', person)
-
 			return person
 		}
 	})
@@ -55,7 +54,7 @@ export default function PersonProfile() {
 				{/* Header */}
 				<div className="relative self-start animate__animated animate__fadeIn animate__faster">
 					<Avatar className="w-56 h-56 shadow-md">
-						<AvatarImage src={person.user?.image} className="object-cover" />
+						{person.user?.image && <AvatarImage src={person.user.image} className="object-cover" />}
 						<AvatarFallback>{person.name[0].toUpperCase()}</AvatarFallback>
 					</Avatar>
 
@@ -103,17 +102,17 @@ export default function PersonProfile() {
 
 						<span className="flex items-center gap-2">
 							<ArrowBigUpDash size={17} />
-							{person.wins} vitórias
+							{pluralize(person.wins, { singularTerm: 'vitória' })}
 						</span>
 
 						<span className="flex items-center gap-2">
 							<ArrowBigDownDash size={17} />
-							{person.defeats} derrotas
+							{pluralize(person.defeats, { singularTerm: 'derrota' })}
 						</span>
 
 						<span className="flex items-center gap-2">
 							<OctagonX size={17} />
-							1 W.O.
+							{pluralize(person.wos, { singularTerm: 'W.O.', pluralTerm: 'W.O.' })}
 						</span>
 					</div>
 				</div>

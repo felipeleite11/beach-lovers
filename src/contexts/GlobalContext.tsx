@@ -2,6 +2,7 @@
 
 import { fetchPersonByUserId } from "@/lib/api";
 import { authClient } from "@/lib/auth.client";
+import { Person } from "@/types/Person";
 import { User } from "better-auth";
 import { redirect, useRouter } from "next/navigation";
 import { createContext, ReactNode, useEffect, useState } from "react";

@@ -33,11 +33,9 @@ export default function TournamentHeader() {
 		)
 	}
 
-	console.log('tournament', tournament)
-
 	return (
 		<div
-			className="w-full h-56 2xl:h-80 transition-all bg-cover bg-no-repeat bg-center rounded-lg relative animate__animated animate__fadeInUp animate__faster"
+			className="w-full h-56 2xl:h-80 transition-all bg-cover bg-no-repeat bg-center rounded-lg relative animate__animated animate__fadeIn animate__fast"
 			style={{ backgroundImage: `url(${tournament.image})` }}
 		>
 			<div className="bg-slate-800/30 absolute top-0 left-0 w-full h-full flex flex-col gap-6 p-8">

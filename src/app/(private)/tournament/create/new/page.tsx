@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Upload, UploadTrigger, UploadViewer } from "@/components/ui/upload"
+import { Upload, UploadTrigger, UploadViewer } from "@/components/ui/upload_bkp"
 import { createTournament, fetchArenas, fetchCategories } from "@/lib/api"
 import { extractNumbers } from "@/utils/number"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -17,8 +17,7 @@ import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import z from "zod"
 import { queryClient } from "@/components/Providers"
-
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
+import { ACCEPTED_IMAGE_TYPES } from "@/utils/file"
 
 const tournamentCreateSchema = z
 	.object({
@@ -53,8 +52,7 @@ const tournamentCreateSchema = z
 				const [d, m, y] = val.split('/')
 				return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`
 			}),
-		image: z.any()
-			.refine(val => val instanceof File, 'Anexe uma imagem')
+		image: z.file('Envie uma imagem')
 			.refine(file => file?.size <= 6 * 1024 * 1024, 'A imagem deve ter até 6MB')
 			.refine(
 				file => ACCEPTED_IMAGE_TYPES.includes(file?.type),
@@ -62,7 +60,7 @@ const tournamentCreateSchema = z
 			),
 		categories: z.array(z.string())
 			.refine(value => value.some(item => item), {
-				message: 'Selecione pelo menos uma categoria.'
+				message: 'Selecione pelo menos uma categoria'
 			})
 	})
 

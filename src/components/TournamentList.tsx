@@ -57,7 +57,7 @@ export default function TournamentList() {
 
 	return (
 		<div className="w-full xl:pr-8 flex flex-col gap-6 overflow-y-auto">
-			<h1 className="font-semibold text-3xl">Torneios abertos</h1>
+			<h1 className="font-semibold text-3xl">Torneios</h1>
 
 			{tournaments?.map((tournament, idx) => {
 				const isSubscriptionAvailable = tournament.status === 'available_subscription'

@@ -2,12 +2,13 @@
 
 import Link from "next/link"
 import { useParams } from "next/navigation"
-import { User } from "lucide-react"
+import { ExternalLink, User } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tournament as TournamentType } from "@/types/Tournament"
 import { useQuery } from "@tanstack/react-query"
 import { fetchTournamentById } from "@/lib/api"
+import { format } from "date-fns"
 
 export default function Tournament() {
 	const { id } = useParams<{ id: string }>()
@@ -57,8 +58,15 @@ export default function Tournament() {
 			<div className="grid grid-cols-[3fr_1fr] gap-10 mt-3">
 				<div className="flex flex-col gap-8">
 					<div className="flex flex-col gap-3 text-sm 2xl:text-sm rounded-md">
-						<span>Local: {tournament.arena?.name} - {tournament.arena?.address}</span>
-						<span>Data e horário: {tournament.datetime}</span>
+						<span className="flex gap-2">
+							Local: {tournament.arena?.name} - {tournament.arena?.address}
+							
+							<Link href={`/arena/${tournament.arena?.id}`}>
+								<ExternalLink size={16} />
+							</Link>
+						</span>
+
+						<span>Data e horário: {format(new Date(tournament.date), 'dd/MM/yyyy hh:mm\'\h\'')}</span>
 						{tournament.price && <span>Valor por participante: R$ {+tournament.price / 100}</span>}
 						{/* {tournament.offered_subscriptions && <span>Vagas: {tournament.offered_subscriptions} pessoas ({tournament.offered_subscriptions / 2} duplas)</span>} */}
 					</div>

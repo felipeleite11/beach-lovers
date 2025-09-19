@@ -1,5 +1,6 @@
+'use client'
+
 import React from 'react'
-import { User } from 'better-auth'
 import { LogOut, Settings, User2Icon } from 'lucide-react'
 import {
 	DropdownMenu,
@@ -13,12 +14,10 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { useRouter } from 'next/navigation'
 import { authClient } from '@/lib/auth.client'
 
-interface NavbarAuthProps {
-	user: User
-}
-
-export default function ProfileContainer({ user }: NavbarAuthProps) {
+export default function ProfileContainer() {
 	const router = useRouter()
+
+	const { data } = authClient.useSession()
 
 	async function handleSignOut() {
 		await authClient.signOut({
@@ -30,12 +29,18 @@ export default function ProfileContainer({ user }: NavbarAuthProps) {
 		})
 	}
 
+	if(!data?.user) {
+		return null
+	}
+
+	const user = data.user
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger>
 				<div className="flex items-center gap-2 dark:hover:bg-slate-900 h-13 px-3 cursor-pointer">
 					<Avatar className="w-10 h-10">
-						{user.image && <AvatarImage src={user.image} />}
+						{user.image && <AvatarImage src={user.image} className="object-cover" />}
 						<AvatarFallback>{user.name[0].toUpperCase()}</AvatarFallback>
 					</Avatar>
 

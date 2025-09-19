@@ -1,3 +1,4 @@
+import { uploadToMinio } from "@/config/file-storage"
 import { prisma } from "@/lib/prisma"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -46,9 +47,19 @@ export async function PUT(
 ) {
 	try {
 		const { slug } = await params
-		const body = await req.json()
 
-		const { name, birthdate, gender } = body
+		const formData = await req.formData()
+
+		const name = formData.get("name") as string
+		const birthdate = formData.get("birthdate") as string
+		const gender = formData.get("gender") as 'M' | 'F'
+		const start_playing_date = formData.get("start_playing_date") as string
+		const file = formData.get("image") as File | null
+		let imageLink
+
+		if (file) {
+			imageLink = await uploadToMinio(file)
+		}
 
 		if (!slug) {
 			return NextResponse.json({ error: 'ID é obrigatório' }, { status: 400 })
@@ -57,18 +68,25 @@ export async function PUT(
 		const response = await prisma.person.update({
 			where: { slug },
 			data: {
-				...(name && { name }),
-				...(birthdate && { birthdate }),
-				...(gender && { gender })
+				name,
+				birthdate: new Date(birthdate),
+				gender,
+				start_playing_date: new Date(start_playing_date),
+				image: imageLink
 			}
 		})
 
-		console.log('response', response)
+		await prisma.user.update({
+			data: {
+				image: imageLink
+			},
+			where: {
+				id: response.userId
+			}
+		})
 
 		return Response.json(response)
 	} catch (error) {
-		console.log(error)
-
 		return Response.json(
 			{ error: 'Erro interno do servidor' },
 			{ status: 500 }

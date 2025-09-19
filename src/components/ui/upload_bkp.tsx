@@ -12,9 +12,10 @@ type UploadProps = Omit<React.ComponentProps<"div">, "children"> &
 			id: string
 		}) => ReactNode
 		onFileChange?: (file: File | null) => void
+		acceptedFormats?: string[]
 	}
 
-function Upload({ className, children, id, onFileChange, ...props }: UploadProps) {
+function Upload({ className, children, id, onFileChange, acceptedFormats, ...props }: UploadProps) {
 	const [image, setImage] = React.useState<null | File>(null)
 
 	return (
@@ -27,12 +28,21 @@ function Upload({ className, children, id, onFileChange, ...props }: UploadProps
 			<input 
 				id={id}
 				name={id} 
+				accept={acceptedFormats?.join(',')}
 				type="file" 
 				className="hidden" 
 				onChange={e => {
-					setImage(e.target.files?.[0] || null)
+					const file = e.target.files?.[0] || null
 
-					onFileChange?.(e.target.files?.[0] || null)
+					if(!file) {
+						return
+					}
+
+					if(acceptedFormats?.includes(file.type)) {
+						setImage(file)
+	
+						onFileChange?.(file)
+					}
 				}} 
 			/>
 		</div>
@@ -52,7 +62,7 @@ function UploadTrigger({ className, id, children, file, ...props }: React.Compon
 		>
 			{file ? (
 				<div className="flex flex-col gap-4 items-center text-slate-600 dark:text-white">
-					<span className="font-semibold">Alterar imagem</span>
+					<span className="font-semibold">Alterar arquivo</span>
 					<span className="text-xs">{file.name} ({Math.round(file.size / 1024)} KB)</span>
 				</div>
 			) : (children || (
@@ -65,6 +75,10 @@ function UploadTrigger({ className, id, children, file, ...props }: React.Compon
 }
 
 function UploadViewer({ className, children, file, ...props }: React.ComponentProps<"div"> & { file: File | null }) {
+	if(!file?.type.startsWith('image/')) {
+		return null
+	}
+
 	const url = file ? URL.createObjectURL(file) : null
 
 	if(!url) {

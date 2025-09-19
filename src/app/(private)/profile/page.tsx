@@ -8,7 +8,7 @@ import { usePerson } from "@/hooks/usePerson"
 import { updatePerson } from "@/lib/api"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
-import { useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -21,10 +21,22 @@ import {
 	DialogHeader,
 	DialogTitle
 } from "@/components/ui/dialog"
+import { Person } from "@/types/Person"
+import { format } from "date-fns"
+import { ACCEPTED_IMAGE_TYPES, urlToFile } from "@/utils/file"
+import { Upload, UploadTrigger, UploadViewer } from "@/components/ui/upload"
+import { Image } from "lucide-react"
+import { authClient } from "@/lib/auth.client"
 
 const profileSchema = z
 	.object({
 		name: z.string().min(1, "Informe seu nome"),
+		image: z.file('Envie uma foto')
+			.refine(file => file?.size <= 6 * 1024 * 1024, 'A imagem deve ter até 6MB')
+			.refine(
+				file => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+				'Envie uma imagem em formato .png, .jpg, .jpeg ou .webp'
+			),
 		gender: z.string().refine(val => ['M', 'F'].includes(val), 'Selecione uma opção'),
 		birthdate: z.string()
 			.refine(val => /^\d{2}\/\d{2}\/\d{4}$/.test(val), "Use o formato dd/mm/yyyy")
@@ -46,11 +58,15 @@ export default function Profile() {
 	const searchParams = useSearchParams()
 	const isCompletion = searchParams.get('completion')
 
+	const { refetch: refetchSession } = authClient.useSession()
+
+	const router = useRouter()
+
 	const person = usePerson()
 
 	const [openUpdateDialog, setOpenUpdateDialog] = useState(!!isCompletion)
 
-	const { register, reset, control, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<ProfileFormInputs>({
+	const { register, reset, control, handleSubmit, formState: { errors, isSubmitting } } = useForm<ProfileFormInputs>({
 		resolver: zodResolver(profileSchema),
 		defaultValues: {
 			name: '',
@@ -60,14 +76,21 @@ export default function Profile() {
 		}
 	})
 
+	async function fillForm(person: Person) {
+		const image = await urlToFile(person.image)
+
+		reset({
+			name: person.name || '',
+			birthdate: person.birthdate ? format(new Date(person.birthdate), 'dd/MM/yyyy') : '',
+			gender: person.gender || '',
+			start_playing_date: person.start_playing_date ? format(new Date(person.start_playing_date), 'MM/yyyy') : '',
+			image: image || undefined
+		})
+	} 
+
 	useEffect(() => {
 		if (person) {
-			reset({
-				name: person.name || '',
-				birthdate: person.birthdate || '',
-				gender: person.gender || '',
-				start_playing_date: person.start_playing_date || ''
-			})
+			fillForm(person)
 		}
 	}, [person, reset])
 
@@ -75,26 +98,55 @@ export default function Profile() {
 		mutationFn: async (data: ProfileFormInputs) => {
 			if (person) {
 				await updatePerson({
-					...data as Person,
-					slug: person?.slug
+					slug: person.slug!,
+					...data,
+					gender: data.gender as 'M' | 'F'
 				})
 			}
 		},
 		onSuccess: () => {
 			toast.success('Perfil atualizado!')
+
+			refetchSession()
+
+			router.push('/home')
 		},
 		onError: error => {
 			toast.error(error?.message || ' Ocorreu um erro ao cadastrar o torneio.')
 		}
 	})
 
-	console.log('watch', watch('gender'))
-
 	return (
 		<div className="flex flex-col gap-4">
 			<h1 className="text-xl font-semibold">Perfil</h1>
 
-			<form onSubmit={handleSubmit((data: ProfileFormInputs) => onSubmit(data))} className="flex flex-col xl:grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+			<form onSubmit={handleSubmit((data: ProfileFormInputs) => onSubmit(data))} className="flex flex-col xl:grid md:grid-cols-[24rem_auto] gap-8">
+				<Controller
+					name="image"
+					control={control}
+					render={({ field }) => (
+						<div className="space-y-2 md:row-span-5 flex justify-center">
+							<Upload id="image" onFileChange={field.onChange} className="w-64 h-64 md:w-80 md:h-80">
+								{({ id }) => (
+									<>
+										<UploadViewer file={field.value} className="rounded-full w-full shadow-md" />
+
+										<UploadTrigger id={id} file={field.value} className="flex flex-col gap-2 rounded-full">
+											<Image size={28} />
+											Enviar imagem
+										</UploadTrigger>
+									</>
+								)}
+							</Upload>
+
+							{errors.image && (
+								<p className="text-sm text-red-500">{errors.image.message}</p>
+							)}
+						</div>
+					)}
+				/>
+
+
 				<div className="space-y-2">
 					<Label htmlFor="name">Nome</Label>
 
@@ -169,7 +221,7 @@ export default function Profile() {
 					)}
 				/>
 
-				<Button disabled={isSubmitting} type="submit" className="xl:my-2 xl:self-end md:col-span-2 xl:col-span-3 cursor-pointer">
+				<Button disabled={isSubmitting} type="submit" className="xl:my-2 cursor-pointer">
 					Atualizar perfil
 				</Button>
 			</form>

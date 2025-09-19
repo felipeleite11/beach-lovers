@@ -242,14 +242,17 @@ model Region {
 }
 
 model Arena {
-  id        String  @id @default(cuid())
-  name      String
-  address   String
-  image_url String?
-  map_link  String?
-  latitude  Float?
-  longitude Float?
-  region_id String?
+  id            String  @id @default(cuid())
+  name          String
+  address       String
+  image_url     String?
+  map_link      String?
+  latitude      Float?
+  longitude     Float?
+  business_time String?
+  contacts      String?
+  day_use       String?
+  region_id     String?
 
   region      Region?      @relation(fields: [region_id], references: [id])
   teachers    Teacher[]    @relation("TeacherArenas")
@@ -261,10 +264,11 @@ model Arena {
 }
 
 model ArenaImage {
-  id       String @id @default(cuid())
-  url      String
-  arena_id String
-  arena    Arena  @relation(fields: [arena_id], references: [id])
+  id          String  @id @default(cuid())
+  url         String
+  description String?
+  arena_id    String
+  arena       Arena   @relation(fields: [arena_id], references: [id])
 
   @@map("arena_image")
 }
@@ -302,14 +306,14 @@ model AnnouncementImage {
 }
 
 model Teacher {
-  id            String          @id @default(cuid())
-  slug          String?
-  name          String
-  image         String?
-  phone         String?
-  email         String?
-  arenas        Arena[]         @relation("TeacherArenas")
-  TeacherRating TeacherRating[]
+  id      String          @id @default(cuid())
+  slug    String?
+  name    String
+  image   String?
+  phone   String?
+  email   String?
+  arenas  Arena[]         @relation("TeacherArenas")
+  ratings TeacherRating[]
 
   @@map("teacher")
 }
