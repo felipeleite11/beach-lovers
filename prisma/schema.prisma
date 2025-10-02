@@ -167,7 +167,8 @@ model Tournament {
   title              String
   description        String?
   image              String?
-  date               DateTime
+  start_date         DateTime
+  end_date           DateTime
   arena_id           String?
   price              Int?
   status             String   @default("created")

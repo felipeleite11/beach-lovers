@@ -66,7 +66,7 @@ export default function Tournament() {
 							</Link>
 						</span>
 
-						<span>Data e horário: {format(new Date(tournament.date), 'dd/MM/yyyy hh:mm\'\h\'')}</span>
+						<span>Data e horário: {format(new Date(tournament.start_date), 'dd/MM/yyyy hh:mm\'\h\'')}</span>
 						{tournament.price && <span>Valor por participante: R$ {+tournament.price / 100}</span>}
 						{/* {tournament.offered_subscriptions && <span>Vagas: {tournament.offered_subscriptions} pessoas ({tournament.offered_subscriptions / 2} duplas)</span>} */}
 					</div>

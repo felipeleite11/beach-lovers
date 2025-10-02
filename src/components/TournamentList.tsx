@@ -104,7 +104,7 @@ export default function TournamentList() {
 										</Button>
 									</TooltipTrigger>
 
-									{tournament.status === 'created' && (
+									{tournament.subscription_start === 'created' && (
 										<TooltipContent side="bottom">
 											As inscrições iniciam em {format(new Date(tournament.subscription_start), 'dd/MM/yyyy hh:mm')}
 										</TooltipContent>

@@ -23,7 +23,15 @@ const tournamentCreateSchema = z
 	.object({
 		title: z.string().min(1, "Informe o nome do torneio."),
 		description: z.string("Informe os detalhes do torneio."),
-		datetime: z.string()
+		start_datetime: z.string()
+			.refine(val => /^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}$/.test(val), "Use o formato dd/mm/yyyy hh:mm")
+			.transform(val => {
+				const [date, time] = val.split(' ')
+				const [d, M, y] = date.split('/')
+				const [h, m] = time.split(':')
+				return `${y}-${M.padStart(2, '0')}-${d.padStart(2, '0')} ${h.padStart(2, '0')}:${m.padStart(2, '0')}:00`
+			}),
+		end_datetime: z.string()
 			.refine(val => /^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}$/.test(val), "Use o formato dd/mm/yyyy hh:mm")
 			.transform(val => {
 				const [date, time] = val.split(' ')
@@ -72,12 +80,13 @@ export default function Create() {
 	const { register, control, handleSubmit, formState: { errors, isSubmitting } } = useForm<TournamentCreateFormInputs>({
 		resolver: zodResolver(tournamentCreateSchema),
 		defaultValues: {
-			title: 'IV Torneio Afluar Veteranos',
+			title: 'Torneio de teste',
 			description: 'Vem participar!',
-			price: 'R$ 10,00',
-			subscription_start: '11/09/2025',
-			subscription_end: '29/09/2025',
-			datetime: '30/09/2025 16:00',
+			price: 'R$ 50,00',
+			subscription_start: '01/10/2025',
+			subscription_end: '04/10/2025',
+			start_datetime: '05/10/2025 09:00',
+			end_datetime: '05/10/2025 22:00',
 			arena_id: '1',
 			categories: []
 		}
@@ -205,18 +214,34 @@ export default function Create() {
 						)}
 					</div>
 
-					<div className="space-y-2">
-						<Label htmlFor="date">Data do torneio</Label>
+					<div className="flex gap-4">
+						<div className="space-y-2">
+							<Label htmlFor="start_datetime">Data de início</Label>
 
-						<Input
-							id="datetime"
-							{...register("datetime")}
-							className="dark:bg-slate-800"
-						/>
+							<Input
+								id="start_datetime"
+								{...register("start_datetime")}
+								className="dark:bg-slate-800"
+							/>
 
-						{errors.datetime && (
-							<p className="text-sm text-red-500">{errors.datetime.message}</p>
-						)}
+							{errors.start_datetime && (
+								<p className="text-sm text-red-500">{errors.start_datetime.message}</p>
+							)}
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="end_datetime">Data de fim</Label>
+
+							<Input
+								id="end_datetime"
+								{...register("end_datetime")}
+								className="dark:bg-slate-800"
+							/>
+
+							{errors.end_datetime && (
+								<p className="text-sm text-red-500">{errors.end_datetime.message}</p>
+							)}
+						</div>
 					</div>
 
 					<div className="flex gap-4">
@@ -260,10 +285,6 @@ export default function Create() {
 							{errors.price && (
 								<p className="text-sm text-red-500">{errors.price.message}</p>
 							)}
-						</div>
-
-						<div>
-							<Checkbox id="" />
 						</div>
 					</div>
 

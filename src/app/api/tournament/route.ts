@@ -38,7 +38,8 @@ export async function POST(req: NextRequest) {
 
 		const title = formData.get("title") as string
 		const description = formData.get("description") as string
-		const datetime = formData.get("datetime") as string
+		const startDatetime = formData.get("start_datetime") as string
+		const endDatetime = formData.get("end_datetime") as string
 		const arena_id = formData.get("arena_id") as string
 		const subscription_start = formData.get("subscription_start") as string
 		const subscription_end = formData.get("subscription_end") as string
@@ -70,7 +71,8 @@ export async function POST(req: NextRequest) {
 			data: {
 				title,
 				description,
-				date: new Date(datetime),
+				start_date: new Date(startDatetime),
+				end_date: new Date(endDatetime),
 				arena_id,
 				image: imageLink,
 				price: +price,

@@ -3,7 +3,8 @@ interface Tournament {
   title: string;
   description: string | null;
   image: string | null;
-  date: string;
+  start_date: string;
+  end_date: string;
   arena_id: string | null;
   price: number | null;
   status: string;
