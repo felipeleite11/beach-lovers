@@ -37,7 +37,7 @@ export default function SignIn() {
 			onSuccess: () => {
 				router.replace('/check_profile')
 			},
-			onError: (ctx) => {
+			onError: ctx => {
 				const message = getBetterAuthErrorMessage(ctx.error.code)
 				
 				toast.error(message)
@@ -47,8 +47,8 @@ export default function SignIn() {
 
 	return (
 		<div className={`flex flex-col gap-8 items-center justify-center bg-[url(/images/public-images/1.png)] bg-no-repeat bg-cover h-[calc(100vh-4rem)] overflow-y-hidden`}>
-			<div className="absolute top-15 left-0 h-[calc(100vh-3.75rem)] w-screen bg-white/40 flex flex-col gap-8 items-center justify-center">
-				<Image alt="" width={200} height={100} src="/images/logo.png" className="h-24 object-contain my-1" />
+			<div className="absolute top-15 left-0 h-[calc(100vh-3.75rem)] w-screen bg-white/40 flex flex-col gap-8 items-center justify-center pt-36">
+				<Image alt="" width={200} height={100} src="/images/logo.png" className="h-16 md:h-24 object-contain my-1" />
 				
 				<Card className="w-full max-w-sm shadow-md mb-36 animate__animated animate__fadeInUp animate__faster">
 					<CardHeader>

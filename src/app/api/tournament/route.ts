@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
 		const subscription_end = formData.get("subscription_end") as string
 		const price = formData.get("price") as string
 		const file = formData.get("image") as File
+		const categories = (formData.get("categories") as string).split(',')
 		let imageLink
 
 		if (file) {
@@ -83,6 +84,11 @@ export async function POST(req: NextRequest) {
 					connect: {
 						id: person.id
 					}
+				},
+				categories: {
+					connect: categories.map(category => ({
+						id: category
+					}))
 				}
 			}
 		})

@@ -54,7 +54,7 @@ export default function TournamentList() {
 				return <span className="text-[0.6rem] bg-sky-500 text-white rounded-md p-1 w-fit">FINALIZADO</span>
 		}
 	}
-
+	
 	return (
 		<div className="w-full xl:pr-8 flex flex-col gap-6 overflow-y-auto">
 			<h1 className="font-semibold text-3xl">Torneios</h1>
@@ -76,6 +76,8 @@ export default function TournamentList() {
 
 									{getStatusBadge(tournament)}
 								</div>
+
+								<span className="text-sm">Data: {format(new Date(tournament.start_date), 'dd/MM/yyyy HH:mm\'h\'')}</span>
 
 								<span className="text-sm">Inscrições: R$ {+tournament.price! / 100}</span>
 
@@ -141,7 +143,7 @@ export default function TournamentList() {
 															{pluralize(subscriptionsOfCategory, { singularTerm: 'inscrito' })}
 														</span>
 													) : (
-														<span className="italic text-slate-400">Nenhum inscrito</span>
+														<span className="italic text-slate-400 text-xs">Nenhum inscrito</span>
 													)}
 												</div>
 											</SheetTrigger>
