@@ -104,7 +104,7 @@ const menuContent = (
 
 		<Link href="/marketplace" className="p-2 rounded-md hover:bg-white/10 flex gap-2 items-center text-sm">
 			<Tag size={16} />
-			Novos e usados
+			Compra, venda e troca
 		</Link>
 
 		<Link href="/learning" className="p-2 rounded-md hover:bg-white/10 flex gap-2 items-center text-sm">

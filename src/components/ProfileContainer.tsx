@@ -39,12 +39,12 @@ export default function ProfileContainer() {
 		<DropdownMenu>
 			<DropdownMenuTrigger>
 				<div className="flex items-center gap-2 dark:hover:bg-slate-900 h-13 px-3 cursor-pointer">
-					<Avatar className="w-10 h-10">
+					<Avatar className="w-9 h-9">
 						{user.image && <AvatarImage src={user.image} className="object-cover" />}
 						<AvatarFallback>{user.name[0].toUpperCase()}</AvatarFallback>
 					</Avatar>
 
-					<span>{user.name}</span>
+					<span className="text-sm">{user.name}</span>
 				</div>
 			</DropdownMenuTrigger>
 

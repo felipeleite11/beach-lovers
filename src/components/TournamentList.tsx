@@ -10,7 +10,7 @@ import { fetchTournaments } from '@/lib/api'
 import { Tournament } from '@/types/Tournament'
 import { cn } from '@/lib/utils'
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
-import { format } from 'date-fns'
+import { format, isSameDay } from 'date-fns'
 import { useRouter } from 'next/navigation'
 import { pluralize } from '@/utils/string'
 import {
@@ -61,6 +61,10 @@ export default function TournamentList() {
 
 			{tournaments?.map((tournament, idx) => {
 				const isSubscriptionAvailable = tournament.status === 'available_subscription'
+				const startDate = new Date(tournament.start_date)
+				const endDate = new Date(tournament.end_date)
+				const formattedStartDate = format(startDate, 'dd/MM/yyyy HH:mm\'h\'')
+				const formattedEndDate = format(endDate, 'dd/MM/yyyy HH:mm\'h\'')
 
 				return (
 					<div key={tournament.id} className={cn(
@@ -77,7 +81,11 @@ export default function TournamentList() {
 									{getStatusBadge(tournament)}
 								</div>
 
-								<span className="text-sm">Data: {format(new Date(tournament.start_date), 'dd/MM/yyyy HH:mm\'h\'')}</span>
+								<span className="text-sm">
+									Data: {isSameDay(startDate, endDate) ? 
+										formattedStartDate : 
+										`${formattedStartDate} a ${formattedEndDate}`}
+								</span>
 
 								<span className="text-sm">Inscrições: R$ {+tournament.price! / 100}</span>
 
@@ -116,7 +124,7 @@ export default function TournamentList() {
 						</div>
 
 						<div className="flex flex-col gap-3 text-sm">
-							<span className="font-semibold text-[1.1rem]">Categorias</span>
+							<span className="font-semibold">Categorias</span>
 
 							<div className="flex flex-wrap gap-3">
 								{tournament.categories?.map(category => {

@@ -21,30 +21,15 @@ interface GlobalContextProviderProps {
 export function GlobalContextProvider({ children }: GlobalContextProviderProps) {
 	const [user, setUser] = useState<User | null>(null)
 	const [person, setPerson] = useState<Person | null>(null)
+	const { data: session } = authClient.useSession()
 
 	const router = useRouter()
 
 	useEffect(() => {
-		async function getSession() {
-			const session = await authClient.getSession()
-
-			if (session.data?.user.id) {
-				setUser(session.data.user)
-
-				const person = await fetchPersonByUserId(session.data.user.id)
-
-				if (person && !(person.birthdate && person?.gender)) {
-					setPerson(person)
-
-					router.push(`/profile?completion=1`)
-				} else {
-					redirect('/home')
-				}
-			}
+		if(session) {
+			setUser(session.user)
 		}
-
-		getSession()
-	}, [])
+	}, [session])
 
 	useEffect(() => {
 		async function getPerson() {

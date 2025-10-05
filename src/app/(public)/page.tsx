@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { authClient, getBetterAuthErrorMessage } from "@/lib/auth.client"
 import { toast } from "sonner"
-import { useQuery } from "@tanstack/react-query"
 import Image from "next/image"
 
 type LoginFormInputs = {
@@ -43,6 +42,16 @@ export default function SignIn() {
 				toast.error(message)
 			}
 		})
+	}
+	async function handleLoginWithGoogle() {
+		try {
+			await authClient.signIn.social({
+				provider: 'google',
+				callbackURL: '/home'
+			})
+		} catch(e) {
+			console.log('Google auth error:', e)
+		}
 	}
 
 	return (
@@ -104,7 +113,19 @@ export default function SignIn() {
 							</Button>
 						</CardFooter>
 					</form>
+
+					<Button 
+						className="w-64 self-center cursor-pointer text-sm"
+						onClick={handleLoginWithGoogle}
+					>
+						<Image alt="Google login" src="/images/google.png" width={50} height={50} className="w-6 object-content" />
+						Entrar com Google
+					</Button>
 				</Card>
+
+				<Link href="/checklist" className="text-slate-800 tet-sm hover:opacity-70">
+					Checklist de tarefas
+				</Link>
 			</div>
 		</div>
 	)

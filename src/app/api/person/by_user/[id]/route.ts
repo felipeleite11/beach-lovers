@@ -8,11 +8,14 @@ export async function GET(
 	const { id } = await params
 
 	try {
-		const response = await prisma.person.findFirst({
+		// TODO: Esta query está com erro
+		const response = await prisma.person.findUnique({
 			where: {
 				userId: id
 			}
 		})
+
+		console.log('person found', id, response)
 
 		if (!response) {
 			return Response.json(
