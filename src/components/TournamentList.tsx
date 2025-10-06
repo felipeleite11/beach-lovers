@@ -21,6 +21,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { SpinnerImage } from './ui/spinner'
 
 export default function TournamentList() {
 	const router = useRouter()
@@ -53,6 +54,14 @@ export default function TournamentList() {
 			case 'finished':
 				return <span className="text-[0.6rem] bg-sky-500 text-white rounded-md p-1 w-fit">FINALIZADO</span>
 		}
+	}
+
+	if(!tournaments) {
+		return (
+			<div className="h-80">
+				<SpinnerImage />
+			</div>
+		)
 	}
 	
 	return (

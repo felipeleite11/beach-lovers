@@ -27,7 +27,7 @@ function SpinnerImage({ className, src, ...props }: SpinnerImageProps) {
 	const randomImage = getRandomItem<string>(loaderImages)
 
 	return (
-		<div className="flex flex-col justify-center items-center gap-4 mt-40 text-sm text-slate-300" suppressHydrationWarning>
+		<div className="flex flex-col justify-center items-center gap-4 mt-40 text-sm text-slate-800 dark:text-slate-300" suppressHydrationWarning>
 			<Image
 				width={80}
 				height={80}
@@ -35,7 +35,7 @@ function SpinnerImage({ className, src, ...props }: SpinnerImageProps) {
 				alt="Aguarde"
 				role="status"
 				aria-label="Loading"
-				className={cn("w-24 h-24 animate-spin", className)}
+				className={cn("w-8 h-8 animate-spin", className)}
 				{...props}
 			/>
 			

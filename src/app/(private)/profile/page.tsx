@@ -119,7 +119,7 @@ export default function Profile() {
 
 	if(!person) {
 		return (
-			<SpinnerImage className="w-8 h-8" />
+			<SpinnerImage />
 		)
 	}
 
