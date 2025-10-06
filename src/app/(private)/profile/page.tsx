@@ -1,18 +1,26 @@
 'use client'
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { usePerson } from "@/hooks/usePerson"
-import { updatePerson } from "@/lib/api"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
+import { ImageIcon } from "lucide-react"
+import { format } from "date-fns"
 import { toast } from "sonner"
 import z from "zod"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { 
+	Select, 
+	SelectContent, 
+	SelectItem, 
+	SelectTrigger, 
+	SelectValue 
+} from "@/components/ui/select"
+import { usePerson } from "@/hooks/usePerson"
+import { updatePerson } from "@/lib/api"
+import { zodResolver } from "@hookform/resolvers/zod"
 import {
 	Dialog,
 	DialogClose,
@@ -21,12 +29,10 @@ import {
 	DialogHeader,
 	DialogTitle
 } from "@/components/ui/dialog"
-import { Person } from "@/types/Person"
-import { format } from "date-fns"
-import { ACCEPTED_IMAGE_TYPES, urlToFile } from "@/utils/file"
+import { ACCEPTED_IMAGE_TYPES } from "@/utils/file"
 import { Upload, UploadTrigger, UploadViewer } from "@/components/ui/upload"
-import { Image } from "lucide-react"
 import { authClient } from "@/lib/auth.client"
+import { SpinnerImage } from "@/components/ui/spinner"
 
 const profileSchema = z
 	.object({
@@ -76,23 +82,18 @@ export default function Profile() {
 		}
 	})
 
-	async function fillForm(person: Person) {
-		const image = await urlToFile(person.image)
-
-		reset({
-			name: person.name || '',
-			birthdate: person.birthdate ? format(new Date(person.birthdate), 'dd/MM/yyyy') : '',
-			gender: person.gender || '',
-			start_playing_date: person.start_playing_date ? format(new Date(person.start_playing_date), 'MM/yyyy') : '',
-			image: image || undefined
-		})
-	} 
-
 	useEffect(() => {
 		if (person) {
-			fillForm(person)
+			setTimeout(() => {
+				reset({
+					name: person.name || '',
+					birthdate: person.birthdate ? format(new Date(person.birthdate), 'dd/MM/yyyy') : '',
+					gender: person.gender || '',
+					start_playing_date: person.start_playing_date ? format(new Date(person.start_playing_date), 'MM/yyyy') : ''
+				})
+			}, 100)
 		}
-	}, [person, reset])
+	}, [person])
 
 	const { mutate: onSubmit } = useMutation({
 		mutationFn: async (data: ProfileFormInputs) => {
@@ -116,6 +117,12 @@ export default function Profile() {
 		}
 	})
 
+	if(!person) {
+		return (
+			<SpinnerImage className="w-8 h-8" />
+		)
+	}
+
 	return (
 		<div className="flex flex-col gap-4">
 			<h1 className="text-xl font-semibold">Perfil</h1>
@@ -125,14 +132,28 @@ export default function Profile() {
 					name="image"
 					control={control}
 					render={({ field }) => (
-						<div className="space-y-2 md:row-span-5 flex justify-center">
-							<Upload id="image" onFileChange={field.onChange} className="w-64 h-64 md:w-80 md:h-80">
-								{({ id }) => (
+						<div className="md:row-span-5 space-y-2 flex justify-center">
+							<Upload 
+								id="image" 
+								onFileChange={field.onChange} 
+								className="w-64 h-64 md:w-80 md:h-80"
+								preloadedImage={person.image || undefined}
+							>
+								{({ id, preloadedImage }) => (
 									<>
-										<UploadViewer file={field.value} className="rounded-full w-full shadow-md" />
+										<UploadViewer 
+											file={field.value} 
+											className="rounded-full w-full shadow-md" 
+											preloadedImage={preloadedImage}
+										/>
 
-										<UploadTrigger id={id} file={field.value} className="flex flex-col gap-2 rounded-full">
-											<Image size={28} />
+										<UploadTrigger 
+											id={id} 
+											file={field.value} 
+											className="flex flex-col gap-2 rounded-full"
+											preloadedImage={preloadedImage}
+										>
+											<ImageIcon size={28} />
 											Enviar imagem
 										</UploadTrigger>
 									</>
@@ -145,7 +166,6 @@ export default function Profile() {
 						</div>
 					)}
 				/>
-
 
 				<div className="space-y-2">
 					<Label htmlFor="name">Nome</Label>
@@ -194,7 +214,7 @@ export default function Profile() {
 					control={control}
 					render={({ field }) => (
 						<div className="space-y-2">
-							<Label htmlFor="gender">Categoria</Label>
+							<Label htmlFor="gender">Sexo</Label>
 
 							<Select
 								value={field.value ?? ''}
@@ -231,7 +251,7 @@ export default function Profile() {
 					<DialogHeader>
 						<DialogTitle>Atualize seu perfil</DialogTitle>
 
-						<DialogDescription>
+						<DialogDescription className="leading-7 mt-3">
 							É essencial atualizar seu perfil antes de participar de qualquer competição. Precisamos saber sua idade e seu sexo para definir de quais competições você poderá participar.
 						</DialogDescription>
 					</DialogHeader>

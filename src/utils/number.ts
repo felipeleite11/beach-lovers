@@ -24,3 +24,9 @@ export function extractNumbers(text: string) {
   
 	return numbers ? numbers.join('') : ''
 }
+
+export function getRandomItem<T = any>(array: any[]): T {
+	const randonIndex = Math.floor(Math.random() * array.length)
+
+  	return array[randonIndex]
+}

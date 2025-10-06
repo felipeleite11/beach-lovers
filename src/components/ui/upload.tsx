@@ -3,18 +3,19 @@
 import * as React from "react"
 import { ReactNode } from 'react'
 import { cn } from "@/lib/utils"
-import Image from "next/image"
 
 type UploadProps = Omit<React.ComponentProps<"div">, "children"> & 
 	{ 
 		id: string
 		children: (props: { 
 			id: string
+			preloadedImage?: string
 		}) => ReactNode
 		onFileChange?: (file: File | null) => void
+		preloadedImage?: string
 	}
 
-function Upload({ className, children, id, onFileChange, ...props }: UploadProps) {
+function Upload({ className, children, id, onFileChange, preloadedImage, ...props }: UploadProps) {
 	const [image, setImage] = React.useState<null | File>(null)
 
 	return (
@@ -22,7 +23,7 @@ function Upload({ className, children, id, onFileChange, ...props }: UploadProps
 			className={cn('flex flex-col items-center w-full h-80 relative', className) }
 			{...props}
 		>
-			{children({ id })}
+			{children({ id, preloadedImage })}
 
 			<input 
 				id={id}
@@ -39,12 +40,12 @@ function Upload({ className, children, id, onFileChange, ...props }: UploadProps
 	)
 }
 
-function UploadTrigger({ className, id, children, file, ...props }: React.ComponentProps<"label"> & { id: string, file: File | null }) {
+function UploadTrigger({ className, id, children, file, preloadedImage, ...props }: React.ComponentProps<"label"> & { id: string, file: File | null, preloadedImage?: string }) {
 	return (
 		<label
 			className={cn(
 				'absolute top-0 cursor-pointer shadow-xs h-full w-full text-sm flex flex-col justify-center items-center px-8 py-4 rounded-md border-1 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-800 text-slate-400 hover:opacity-70 transition-all', 
-				{ 'opacity-0': !!file },
+				{ 'opacity-0': !!file || !!preloadedImage },
 				className
 			)}
 			htmlFor={id}
@@ -64,8 +65,8 @@ function UploadTrigger({ className, id, children, file, ...props }: React.Compon
 	)
 }
 
-function UploadViewer({ className, children, file, ...props }: React.ComponentProps<"div"> & { file: File | null }) {
-	const url = file ? URL.createObjectURL(file) : null
+function UploadViewer({ className, children, file, preloadedImage, ...props }: React.ComponentProps<"div"> & { file: File | null, preloadedImage?: string }) {
+	const url = file ? URL.createObjectURL(file) : preloadedImage
 
 	if(!url) {
 		return null
@@ -76,7 +77,7 @@ function UploadViewer({ className, children, file, ...props }: React.ComponentPr
 			className={cn("absolute top-0 h-full rounded-md overflow-hidden", className)}
 			{...props}
 		>
-			<Image src={url} alt="" width={500} height={500} className="object-cover object-center rounded-md w-full h-full" />
+			<img src={(url || preloadedImage)!} alt="" className="object-cover object-center rounded-md w-full h-full" />
 		</div>
 	)
 }

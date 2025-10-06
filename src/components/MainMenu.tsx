@@ -34,7 +34,7 @@ const menuContent = (
 						</li>
 
 						<li>
-							<Link href="/" className="p-2 rounded-md hover:bg-white/10 flex gap-2 items-center">
+							<Link href="/tournament/mine" className="p-2 rounded-md hover:bg-white/10 flex gap-2 items-center">
 								<CalendarDays size={16} />
 								Meus torneios
 							</Link>

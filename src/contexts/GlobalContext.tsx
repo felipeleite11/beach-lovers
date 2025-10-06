@@ -6,10 +6,12 @@ import { Person } from "@/types/Person";
 import { User } from "better-auth";
 import { redirect, useRouter } from "next/navigation";
 import { createContext, ReactNode, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface GlobalContextProps {
 	user: User | null
 	person: Person | null
+	isProfileComplete: boolean
 }
 
 export const GlobalContext = createContext({} as GlobalContextProps)
@@ -19,11 +21,17 @@ interface GlobalContextProviderProps {
 }
 
 export function GlobalContextProvider({ children }: GlobalContextProviderProps) {
-	const [user, setUser] = useState<User | null>(null)
-	const [person, setPerson] = useState<Person | null>(null)
 	const { data: session } = authClient.useSession()
 
+	const [user, setUser] = useState<User | null>(null)
+	const [person, setPerson] = useState<Person | null>(null)
+	const [isProfileComplete, setIsProfileComplete] = useState(false)
+
 	const router = useRouter()
+
+	function checkProfileCompleteness(person: Person | null) {
+		return !!(person?.birthdate && person?.gender && person?.start_playing_date)
+	}
 
 	useEffect(() => {
 		if(session) {
@@ -34,16 +42,26 @@ export function GlobalContextProvider({ children }: GlobalContextProviderProps) 
 	useEffect(() => {
 		async function getPerson() {
 			if (user?.id) {
-				const person = await fetchPersonByUserId(user.id)
+				try {
+					const person = await fetchPersonByUserId(user.id)
 
-				setPerson(person)
+					if(!person) {
+						throw new Error('Pessoa não encontrada!')
+					}
 
-				const isProfileIncomplete = person && !(person.birthdate && person.gender && person.start_playing_date)
+					setPerson(person)
 
-				if (isProfileIncomplete) {
-					router.push(`/profile?completion=1`)
-				} else {
-					redirect('/home')
+					const isProfileComplete = checkProfileCompleteness(person)
+
+					setIsProfileComplete(isProfileComplete)
+
+					if (!isProfileComplete) {
+						router.push(`/profile?completion=1`)
+					} else {
+						redirect('/home')
+					}
+				} catch(e: any) {
+					toast.error(e.message)
 				}
 			}
 		}
@@ -54,7 +72,8 @@ export function GlobalContextProvider({ children }: GlobalContextProviderProps) 
 	return (
 		<GlobalContext.Provider value={{
 			user,
-			person
+			person,
+			isProfileComplete
 		}}>
 			{children}
 		</GlobalContext.Provider>

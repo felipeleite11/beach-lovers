@@ -122,10 +122,6 @@ export default function SignIn() {
 						Entrar com Google
 					</Button>
 				</Card>
-
-				<Link href="/checklist" className="text-slate-800 tet-sm hover:opacity-70">
-					Checklist de tarefas
-				</Link>
 			</div>
 		</div>
 	)

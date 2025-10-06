@@ -19,7 +19,8 @@ export const auth = betterAuth({
                         data: {
                             name: user.name,
                             slug: generateSlug(user.name),
-                            userId: user.id
+                            userId: user.id,
+                            image: user.image
                         }
                     })
                 }
@@ -31,5 +32,6 @@ export const auth = betterAuth({
             clientId: process.env.GOOGLE_CLIENT_ID as string, 
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
         }
-    }
+    },
+    
 })

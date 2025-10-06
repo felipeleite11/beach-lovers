@@ -1,6 +1,5 @@
 import { useContext } from 'react'
 import { GlobalContext } from '@/contexts/GlobalContext'
-import { User } from 'better-auth'
 
 export function useUser() {
 	const context = useContext(GlobalContext)

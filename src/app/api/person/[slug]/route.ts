@@ -55,7 +55,7 @@ export async function PUT(
 		const gender = formData.get("gender") as 'M' | 'F'
 		const start_playing_date = formData.get("start_playing_date") as string
 		const file = formData.get("image") as File | null
-		let imageLink
+		let imageLink: string
 
 		if (file) {
 			imageLink = await uploadToMinio(file)
@@ -65,24 +65,28 @@ export async function PUT(
 			return NextResponse.json({ error: 'ID é obrigatório' }, { status: 400 })
 		}
 
-		const response = await prisma.person.update({
-			where: { slug },
-			data: {
-				name,
-				birthdate: new Date(birthdate),
-				gender,
-				start_playing_date: new Date(start_playing_date),
-				image: imageLink
-			}
-		})
+		const response = await prisma.$transaction(async tx => {
+			const person = await tx.person.update({
+				where: { slug },
+				data: {
+					name,
+					birthdate: new Date(birthdate),
+					gender,
+					start_playing_date: new Date(start_playing_date),
+					image: imageLink
+				}
+			})
 
-		await prisma.user.update({
-			data: {
-				image: imageLink
-			},
-			where: {
-				id: response.userId
-			}
+			await tx.user.update({
+				data: {
+					image: imageLink
+				},
+				where: {
+					id: person.userId
+				}
+			})
+
+			return person
 		})
 
 		return Response.json(response)

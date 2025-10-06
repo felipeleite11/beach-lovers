@@ -49,3 +49,15 @@
 .delay-4900 { animation-delay: 4900ms; }
 .delay-5000 { animation-delay: 5000ms; }
 
+@keyframes pendulum {
+	from {
+		transform: rotate(-90deg);
+	}
+	to {
+		transform: rotate(0deg);
+	}
+}
+
+.animate-pendulum {
+	animation: pendulum 700ms alternate infinite linear;
+}

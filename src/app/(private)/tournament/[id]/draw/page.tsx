@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
+import { Play, RotateCw } from "lucide-react"
+import Link from "next/link"
 import { toast } from "sonner"
 import { useQuery } from "@tanstack/react-query"
 import { tournaments } from "@/storage"
@@ -9,10 +11,9 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { groupIntoCouples, shuffle } from "@/utils/array"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Play, RotateCw } from "lucide-react"
-import { cn } from "@/lib/utils"
-import Link from "next/link"
+import { Spinner } from "@/components/ui/spinner"
 import { Tournament } from "@/types/Tournament"
+import { cn } from "@/lib/utils"
 
 export default function Draw() {
 	const { id } = useParams<{ id: string }>()
@@ -172,7 +173,12 @@ export default function Draw() {
 						</div>
 					)}
 				</div>
-			) : 'Aguarde...'}
+			) : (
+				<div className="flex flex-col gap-8 items-center">
+					<Spinner />
+					<span className="text-sm">Aguarde...</span>
+				</div>
+			)}
 		</div>
 	)
 }
