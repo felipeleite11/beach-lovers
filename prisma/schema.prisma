@@ -171,6 +171,8 @@ model Tournament {
   end_date           DateTime
   arena_id           String?
   price              Int?
+  latitude           Float?
+  longitude          Float?
   status             String   @default("created")
   subscription_start DateTime
   subscription_end   DateTime

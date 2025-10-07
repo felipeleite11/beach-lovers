@@ -8,7 +8,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select"
-// import LeafletMap from "@/components/Map"
 import Image from "next/image"
 import { CalendarCheck, Clock, Heart, Map, MessageCircle, Phone } from "lucide-react"
 
@@ -19,6 +18,7 @@ import Link from "next/link"
 import { useQuery } from "@tanstack/react-query"
 import { fetchArenasByRegion, fetchRegions } from "@/lib/api"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Map2 } from "@/components/Map2"
 
 export default function Places() {
 	const [selectedRegionId, setSelectedRegionId] = useState('1')
@@ -199,10 +199,21 @@ function ArenaContainer({ arena }: { arena?: Arena }) {
 			<div className="flex flex-col gap-4">
 				<h3 className="text-lg font-semibold mt-2">Localização</h3>
 			
-				{/* <LeafletMap
-					lat={-1.3710349016107874}
-					lng={-48.44330618579579}
-					marker_message="Vem pra DBeach!"
+				{/* <Map2 
+					center={{ 
+						latitude: -1.3710349016107874, 
+						longitude: -48.44330618579579 
+					}}
+					markers={[
+						{
+							title: arena.name,
+							latitude: -1.3710349016107874,
+							longitude: -48.44330618579579,
+							infoComponent: (
+								<div>teste</div>
+							)
+						}
+					]}
 				/> */}
 
 				<a href="https://maps.app.goo.gl/BjYqcCu8fwHDG6ia8" target="_blank" className="text-sky-500 hover:text-sky-600">Como chegar?</a>

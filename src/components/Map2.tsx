@@ -1,26 +1,58 @@
 'use client'
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, ReactElement } from "react"
+import ReactDOM from 'react-dom/client'
 import { setOptions, importLibrary } from "@googlemaps/js-api-loader"
 import colors from 'tailwindcss/colors'
 import { cn } from "@/lib/utils"
 
-setOptions({ 
+setOptions({
 	key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
 	language: "pt-BR",
 	region: "BR",
 	v: "weekly"
 })
 
-interface MapProps {
-	latitude: number
-	longitude: number
+type MapProps = {
+	center: Position,
 	zoom?: number
 	className?: string
+	markers?: (Position & { infoComponent: ReactElement })[]
 }
 
-export function Map2({ latitude, longitude, zoom = 16, className }: MapProps) {
+let currentInfoWindow: any = null
+const infoWindows: any = []
+
+export function Map2({ center, zoom = 15, className, markers }: MapProps) {
 	const mapRef = useRef<HTMLDivElement>(null)
+
+	async function createMarker(map: any, position: Position, content: any, info?: any) {
+		const { InfoWindow } = await importLibrary("maps")
+		const { AdvancedMarkerElement } = await importLibrary("marker")
+
+		const marker = new AdvancedMarkerElement({
+			position,
+			map
+		})
+
+		if(info) {
+			const infoWindow = new InfoWindow({
+				content
+			})
+			
+			marker.addListener("click", () => {
+				if (currentInfoWindow) {
+					currentInfoWindow.close()
+				}
+	
+				infoWindow.open(map, marker)
+		
+				currentInfoWindow = infoWindow
+			})
+		}
+
+		return marker
+	}
 
 	useEffect(() => {
 		async function initMap() {
@@ -31,15 +63,15 @@ export function Map2({ latitude, longitude, zoom = 16, className }: MapProps) {
 				const map = new Map(mapRef.current, {
 					zoom,
 					center: {
-						lat: latitude,
-						lng: longitude
+						lat: center.latitude,
+						lng: center.longitude
 					},
 					mapId: '4504f8b37365c3d0'
 				})
 
 				new AdvancedMarkerElement({
 					map,
-					position: { lat: latitude, lng: longitude }
+					position: { lat: center.latitude, lng: center.longitude }
 				})
 
 				new Circle({
@@ -50,48 +82,78 @@ export function Map2({ latitude, longitude, zoom = 16, className }: MapProps) {
 					fillColor: colors.sky[500],
 					fillOpacity: 0.3,
 					center: {
-						lat: latitude,
-						lng: longitude
+						lat: center.latitude,
+						lng: center.longitude
 					},
 					radius: 350
 				})
 
-				const balloon = document.createElement('div')
-				balloon.textContent = 'J.V.'
-				balloon.style.background = colors.sky[600]
-				balloon.style.padding = '4px 8px'
-				balloon.style.borderRadius = '4px'
-				balloon.style.fontSize = '11px'
-				balloon.style.fontWeight = 'bold'
-				balloon.style.boxShadow = '0 1px 4px rgba(0,0,0,0.3)'
+				markers?.forEach(async marker => {
+					// function Balloon() {
+					// 	return (
+					// 		<div className="bg-sky-600 px-1 py-2 rounded-sm text-sm font-bold shadow-md">
+					// 			{marker.title}
+					// 		</div>
+					// 	)
+					// }
 
-				const infoWindow = new InfoWindow({
-					content: `
-						<div class="flex gap-4 text-slate-800 w-full h-full">
-							<img src="/images/boy.jpg" class="w-11 h-11 rounded-full" />
-							
-							<div class="flex flex-col gap-1">
-								<h1 class="text-slate-800 font-bold text-md">João Victor Souza</h1>
-								<span class="text-xs">Masculino - Categoria D</span>
-							</div>
-						</div>
-					`,
-					maxWidth: 200
-				})
+					// const balloonContainer = document.createElement('div')
+					// const balloon = ReactDOM.createRoot(balloonContainer)
+					// balloon.render(<Balloon />)
 
-				const marker = new AdvancedMarkerElement({
-					map,
-					position: {
-						lat: latitude + 0.002,
-						lng: longitude + 0.002
-					},
-					content: balloon
-				})
+					// console.log('balloonContainer', balloonContainer)
 
-				marker.addListener('click', () => {
-					infoWindow.open({
-						anchor: marker,
-						map
+					// TODO: Melhoria: criar o balloon abaixo com React
+
+					const balloon = document.createElement('div')
+					balloon.textContent = marker.title || '',
+					balloon.style.background = colors.sky[600]
+					balloon.style.padding = '4px 8px'
+					balloon.style.borderRadius = '4px'
+					balloon.style.fontSize = '11px'
+					balloon.style.fontWeight = 'bold'
+					balloon.style.boxShadow = '0 1px 4px rgba(0,0,0,0.3)'
+
+					// TODO: Melhoria: criar cada marcador já com seu infoWindow correspondente
+					
+					// await createMarker(
+					// 	map,
+					// 	{
+					// 		latitude: marker.latitude,
+					// 		longitude: marker.longitude
+					// 	},
+					// 	'<div>teste</div>',
+					// 	'<div>teste info window</div>'
+					// )
+
+					const advMarker = new AdvancedMarkerElement({
+						map,
+						position: {
+							lat: marker.latitude,
+							lng: marker.longitude
+						},
+						content: balloon
+					})
+
+					const infoContainer = document.createElement('div')
+					const info = ReactDOM.createRoot(infoContainer)
+					info.render(marker.infoComponent)
+
+					const infoWindow = new InfoWindow({
+						ariaLabel: marker.title,
+						content: infoContainer,
+						maxWidth: 350
+					})
+
+					infoWindows.push(infoWindow)
+
+					advMarker.addListener('click', () => {
+						infoWindows.forEach((infoWindow: any) => infoWindow.close())
+
+						infoWindow.open({
+							anchor: advMarker,
+							map
+						})
 					})
 				})
 			}
@@ -101,6 +163,6 @@ export function Map2({ latitude, longitude, zoom = 16, className }: MapProps) {
 	}, [])
 
 	return (
-		<div className={cn('w-full h-96', className)} ref={mapRef} />
+		<div className={cn('google-map w-full h-full', className)} ref={mapRef} />
 	)
 }

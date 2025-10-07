@@ -4,7 +4,6 @@ import { SearchIcon } from "lucide-react"
 import { useForm, Controller } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Kbd } from "@/components/ui/kbd"
 import {
   Field,
   FieldDescription,
@@ -15,9 +14,10 @@ import {
 } from "@/components/ui/field"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useQuery } from "@tanstack/react-query"
-import { fetchRegions } from "@/lib/api"
+import { fetchRegions, fetchTournaments } from "@/lib/api"
 import { useGeolocation } from "@/hooks/useGeolocation"
 import { Map2 } from "@/components/Map2"
+import { TournamentSummaryForMapInfoContent } from "@/components/TournamentSummaryForMapInfoContent"
 
 type SearchData = {
 	region: string
@@ -30,6 +30,15 @@ export default function Search() {
 		queryKey: ['get-regions'],
 		queryFn: async () => {
 			const response = await fetchRegions()
+
+			return response
+		}
+	})
+
+	const { data: tournaments } = useQuery({
+		queryKey: ['get-tournaments'],
+		queryFn: async () => {
+			const response = await fetchTournaments()
 
 			return response
 		}
@@ -86,18 +95,9 @@ export default function Search() {
 								)}
 							/>
 						</Field>
-
-						{isFetching ? (
-							<div>Buscando posição</div>
-						) : location ? (
-							<Map2 
-								latitude={location.latitude}
-								longitude={location.longitude}
-							/>
-						) : null}
-
-						<p>- por local de jogo</p>
-						<p>- por sexo</p>
+						
+						<p className="text-red-500">- por local de jogo</p>
+						<p className="text-red-500">- por sexo</p>
 					</FieldGroup>
 				</FieldSet>
 
@@ -106,6 +106,26 @@ export default function Search() {
 					<SearchIcon size={16} />
 				</Button>
 			</form>
+
+			{isFetching ? (
+				<div>Buscando posição</div>
+			) : location && !!tournaments?.length ? (
+				<div className="h-[700px] w-full">
+					<Map2 
+						center={location}
+						markers={tournaments?.map((tournament, idx) => {
+							const devDisplacement = (idx + 1) * 0.002
+
+							return {
+								latitude: process.env.NEXT_PUBLIC_ENV !== 'development' ? tournament.latitude : location.latitude + devDisplacement,
+								longitude: process.env.NEXT_PUBLIC_ENV !== 'development' ? tournament.longitude : location.longitude + devDisplacement,
+								title: tournament.title,
+								infoComponent: <TournamentSummaryForMapInfoContent tournament={tournament} />
+							}
+						})}
+					/>
+				</div>
+			) : null}
 		</div>
 	)
 }

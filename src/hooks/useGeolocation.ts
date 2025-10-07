@@ -37,7 +37,7 @@ export function useGeolocation(): LocationReturn {
 			setLocation(null)
 		}
 
-		navigator.geolocation.getCurrentPosition(onSuccess, onError)
+		navigator.geolocation.watchPosition(onSuccess, onError, { enableHighAccuracy: true })
 	}, [])
 
 	useEffect(() => {
