@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useQuery } from "@tanstack/react-query"
 import { fetchRegions } from "@/lib/api"
 import { useGeolocation } from "@/hooks/useGeolocation"
+import { Map2 } from "@/components/Map2"
 
 type SearchData = {
 	region: string
@@ -88,16 +89,15 @@ export default function Search() {
 
 						{isFetching ? (
 							<div>Buscando posição</div>
-						) : (
-							<div>
-								Exibir mapa na posição: 
-								<Kbd>{location?.latitude}, {location?.longitude}</Kbd>
-								(buscar dentro de um raio de X KM)
-							</div>
-						)}
+						) : location ? (
+							<Map2 
+								latitude={location.latitude}
+								longitude={location.longitude}
+							/>
+						) : null}
 
-						- por local de jogo
-						- por sexo
+						<p>- por local de jogo</p>
+						<p>- por sexo</p>
 					</FieldGroup>
 				</FieldSet>
 
