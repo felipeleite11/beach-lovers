@@ -8,6 +8,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { Inbox, Plus, Search } from "lucide-react"
+import Link from "next/link"
 
 export default function MyTournaments() {
 	return (
@@ -25,9 +26,11 @@ export default function MyTournaments() {
 					Busque um torneio para disputar ou crie seu próprio.
 				</EmptyDescription>
 				<EmptyContent>
-					<Button variant="outline">
-						Buscar um tornio
-						<Search size={16} />
+					<Button variant="outline" asChild>
+						<Link href="/tournament/search">
+							Buscar um torneio
+							<Search size={16} />
+						</Link>
 					</Button>
 
 					<Button>

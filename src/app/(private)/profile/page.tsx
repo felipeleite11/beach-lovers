@@ -127,7 +127,10 @@ export default function Profile() {
 		<div className="flex flex-col gap-4">
 			<h1 className="text-xl font-semibold">Perfil</h1>
 
-			<form onSubmit={handleSubmit((data: ProfileFormInputs) => onSubmit(data))} className="flex flex-col xl:grid md:grid-cols-[24rem_auto] gap-8">
+			<form 
+				onSubmit={handleSubmit((data: ProfileFormInputs) => onSubmit(data))} 
+				className="flex flex-col xl:grid md:grid-cols-[24rem_auto] gap-8"
+			>
 				<Controller
 					name="image"
 					control={control}

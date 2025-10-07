@@ -27,7 +27,7 @@ const menuContent = (
 						</li>
 
 						<li>
-							<Link href="/" className="p-2 rounded-md hover:bg-white/10 flex gap-2 items-center">
+							<Link href="/tournament/search" className="p-2 rounded-md hover:bg-white/10 flex gap-2 items-center">
 								<Search size={16} />
 								Buscar torneios
 							</Link>
