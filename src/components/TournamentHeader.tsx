@@ -5,21 +5,25 @@ import { useQuery } from '@tanstack/react-query'
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { InfoIcon, LogIn, Settings, Shuffle } from "lucide-react"
+import { ChevronDownIcon, InfoIcon, LogIn, MailCheckIcon, MoreHorizontalIcon, Settings, Shuffle, User } from "lucide-react"
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { Skeleton } from "@/components/ui/skeleton"
+import { ButtonGroup } from "@/components/ui/button-group"
 import { Tournament } from '@/types/Tournament'
 import { fetchTournamentById } from '@/lib/api'
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
+import { Separator } from './ui/separator'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
 
 export default function TournamentHeader() {
 	const { id } = useParams<{ id: string }>()
 
 	const { data: tournament } = useQuery<Tournament>({
-		queryKey: ['find-tournament-by-id'],
+		queryKey: ['fetch-tournament-by-id'],
 		queryFn: async () => {
 			const foundTournament = await fetchTournamentById(String(id))
 
@@ -43,7 +47,7 @@ export default function TournamentHeader() {
 
 				<div className="flex gap-24 items-end -bottom-8 absolute">
 					{/* Public options */}
-					<div className="flex gap-6 items-center">
+					<div className="flex gap-6">
 						<Button
 							asChild
 							className="bg-emerald-700 hover:bg-emerald-800 text-white hover:text-white h-20 2xl:h-20 w-32 transition-all"
@@ -57,7 +61,43 @@ export default function TournamentHeader() {
 
 					{/* Manager options */}
 					<div className="flex gap-6 items-center">
-						<Button
+						<ButtonGroup>
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button>
+										Administrar
+										<MoreHorizontalIcon />
+									</Button>
+								</DropdownMenuTrigger>
+
+								<DropdownMenuContent align="end">
+									<DropdownMenuGroup>
+										<DropdownMenuItem className="cursor-pointer" asChild>
+											<Link href={`/tournament/${tournament.id}/draw`}>
+												<Shuffle />
+												Iniciar sorteio das duplas
+											</Link>
+										</DropdownMenuItem>
+
+										<DropdownMenuItem className="cursor-pointer" asChild>
+											<Link href={`/tournament/${tournament.id}/info`}>
+												<InfoIcon />
+												Publicar informativo
+											</Link>
+										</DropdownMenuItem>
+
+										<DropdownMenuItem className="cursor-pointer" asChild>
+											<Link href={`/tournament/${tournament.id}/edit`} className="flex items-center">
+												<Settings />
+												Alterar dados do torneio
+											</Link>
+										</DropdownMenuItem>
+									</DropdownMenuGroup>
+								</DropdownMenuContent>
+							</DropdownMenu>
+						</ButtonGroup>
+
+					{/* <Button
 							asChild
 							className="bg-orange-700 hover:bg-orange-800 text-white hover:text-white h-16 2xl:h-16 transition-all"
 						>
@@ -75,9 +115,9 @@ export default function TournamentHeader() {
 								<InfoIcon />
 								Publicar informativo
 							</Link>
-						</Button>
+						</Button> */}
 
-						<Tooltip>
+					{/* <Tooltip>
 							<TooltipTrigger>
 								<Button
 									asChild
@@ -93,10 +133,10 @@ export default function TournamentHeader() {
 							<TooltipContent>
 								<p>Alterar local, data, horário, etc.</p>
 							</TooltipContent>
-						</Tooltip>
-					</div>
+						</Tooltip> */}
 				</div>
 			</div>
 		</div>
+		</div >
 	)
 }

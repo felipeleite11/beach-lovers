@@ -25,3 +25,9 @@ interface Tournament {
 
 export type TournamentCreateInput = Omit<Tournament, 'id' | 'created_at'>
 export type TournamentUpdateInput = Partial<Omit<Tournament, 'id' | 'created_at'>>
+
+export type TournamentSearchData = {
+	region: string
+	arena: string
+	gender: 'M'	| 'F'
+}

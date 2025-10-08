@@ -24,7 +24,7 @@ export default function Draw() {
 	const [drawnPairs, setDrawnPairs] = useState<null | Pair[]>(null)
 
 	const { data: tournament } = useQuery<Tournament>({
-		queryKey: ['find-tournament-by-id'],
+		queryKey: ['fetch-tournament-by-id'],
 		queryFn: async () => {
 			const foundTournament = tournaments.find(tournament => tournament.id === +id!)
 

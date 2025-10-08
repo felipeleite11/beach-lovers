@@ -108,6 +108,7 @@ export function Map2({ center, zoom = 15, className, markers }: MapProps) {
 					const balloon = document.createElement('div')
 					balloon.textContent = marker.title || '',
 					balloon.style.background = colors.sky[600]
+					balloon.style.color = colors.white
 					balloon.style.padding = '4px 8px'
 					balloon.style.borderRadius = '4px'
 					balloon.style.fontSize = '11px'

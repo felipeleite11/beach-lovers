@@ -2,9 +2,9 @@
 
 import { useRouter, redirect } from "next/navigation"
 import { useEffect, useState } from "react"
-import { Progress } from "@/components/ui/progress"
 import { fetchPersonByUserId } from "@/lib/api"
 import { authClient } from "@/lib/auth.client"
+import { SpinnerImage } from "@/components/ui/spinner"
 
 let interval: NodeJS.Timeout
 
@@ -43,8 +43,7 @@ export default function CheckProfile() {
 
 	return (
 		<div className="flex flex-col justify-center items-center gap-6 h-full">
-			<span className="text-md text-slate-300">Carregando...</span>
-			<Progress value={progress} className="h-1 max-w-2xs w-full" />
+			<SpinnerImage />
 		</div>
 	)
 }

@@ -1,5 +1,5 @@
 import axios from "axios"
-import { Tournament } from "@/types/Tournament"
+import { Tournament, TournamentSearchData } from "@/types/Tournament"
 import { TournamentCreateFormInputs } from "@/app/(private)/tournament/create/new/page"
 import { Person } from "@/types/Person"
 import { Teacher } from "@/types/Teacher"
@@ -106,6 +106,18 @@ export async function createTournament(data: TournamentCreateFormInputs): Promis
 	return response.data
 }
 
+export async function searchTournaments(data: TournamentSearchData): Promise<Tournament[]> {
+	const response = await api.get<Tournament[]>('/api/tournament', {
+		params: data
+	})
+
+	if (response.status !== 200) {
+		throw new Error('Erro ao buscar torneios')
+	}
+
+	return response.data
+}
+
 // Arena
 export async function fetchArenas(): Promise<Arena[]> {
 	const response = await api.get<Arena[]>('/api/arena')
@@ -153,8 +165,21 @@ export async function fetchCategories(): Promise<Category[]> {
 	return response.data
 }
 
-// Teacher
+export async function fetchCategoriesByTournament(tournamentId: string): Promise<Category[]> {
+	const response = await api.get<Category[]>('/api/category', {
+		params: {
+			tournament: tournamentId
+		}
+	})
 
+	if (response.status !== 200) {
+		throw new Error('Erro ao buscar categorias')
+	}
+
+	return response.data
+}
+
+// Teacher
 export async function fetchTeacherBySlug(slug: string): Promise<Teacher> {
 	const response = await api.get<Teacher>(`/api/teacher/${slug}`)
 	

@@ -14,7 +14,7 @@ export default function Tournament() {
 	const { id } = useParams<{ id: string }>()
 
 	const { data: tournament } = useQuery<TournamentType>({
-		queryKey: ['find-tournament-by-id'],
+		queryKey: ['fetch-tournament-by-id'],
 		queryFn: async () => {
 			const foundTournament = await fetchTournamentById(String(id))
 

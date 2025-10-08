@@ -5,8 +5,28 @@ import { headers } from 'next/headers'
 import { isAfter } from 'date-fns'
 import { uploadToMinio } from '@/config/file-storage'
 
-export async function GET() {
+export async function GET(request: Request) {
 	try {
+		const { searchParams } = new URL(request.url)
+
+		const arenaId = searchParams.get('arena')
+		const regionId = searchParams.get('region')
+		const gender = searchParams.get('gender')
+
+		let genderCondition = ''
+
+		switch (gender) {
+			case 'M':
+				genderCondition = 'Masculino'
+				break
+			case 'F':
+				genderCondition = 'Feminino'
+				break
+			default:
+				genderCondition = ''
+				break
+		}
+
 		const response = await prisma.tournament.findMany({
 			include: {
 				arena: true,
@@ -15,11 +35,30 @@ export async function GET() {
 						person: true
 					}
 				},
-				categories: true,
+				categories: {
+					where: genderCondition ? {
+						name: {
+							contains: genderCondition
+						}
+					} : undefined
+				},
 				slots: true
 			},
 			orderBy: {
 				created_at: 'desc'
+			},
+			where: {
+				arena: {
+					id: arenaId || undefined,
+					region_id: regionId || undefined
+				},
+				categories: genderCondition ? {
+					some: {
+						name: {
+							contains: genderCondition
+						}
+					}
+				} : undefined
 			}
 		})
 
@@ -62,12 +101,12 @@ export async function POST(req: NextRequest) {
 			}
 		})
 
-		if(!person) {
+		if (!person) {
 			throw new Error('Pessoa não encontrada.')
 		}
 
 		const isSubscriptionsStarted = isAfter(new Date(), new Date(subscription_start))
-		
+
 		const response = await prisma.tournament.create({
 			data: {
 				title,

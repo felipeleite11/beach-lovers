@@ -11,7 +11,7 @@ export function getDuration(earlierDate: Date) {
 			start: earlierDate,
 			end: new Date()
 		}),
-		{ 
+		{
 			locale: ptBR,
 			format: ['months'],
 			zero: false
@@ -21,12 +21,21 @@ export function getDuration(earlierDate: Date) {
 
 export function extractNumbers(text: string) {
 	const numbers = text.match(/\d+/g)
-  
+
 	return numbers ? numbers.join('') : ''
 }
 
 export function getRandomItem<T = any>(array: any[]): T {
 	const randonIndex = Math.floor(Math.random() * array.length)
 
-  	return array[randonIndex]
+	return array[randonIndex]
+}
+
+export function formatCurrency(cents: number): string {
+	const value = cents / 100
+
+	return value.toLocaleString('pt-BR', {
+		style: 'currency',
+		currency: 'BRL'
+	})
 }

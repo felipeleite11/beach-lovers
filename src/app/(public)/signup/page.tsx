@@ -30,8 +30,8 @@ export default function SignUp() {
 	const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignUpFormInputs>({
 		resolver: zodResolver(signUpSchema),
 		defaultValues: {
-			name: 'Felipe Leite',
-			email: 'felipe@email.com',
+			name: 'Felipe1 Leite',
+			email: 'felipe1@email.com',
 			password: '12345678',
 			confirmPassword: '12345678'
 		}
@@ -69,6 +69,19 @@ export default function SignUp() {
 
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<CardContent className="space-y-4">
+						<div className="space-y-2">
+							<Label htmlFor="name">Name</Label>
+							<Input
+								id="name"
+								placeholder="Digite seu nome"
+								{...register("name", { required: "O nome é obrigatório" })}
+								className="dark:bg-slate-700"
+							/>
+							{errors.name && (
+								<p className="text-sm text-red-500">{errors.name.message}</p>
+							)}
+						</div>
+
 						<div className="space-y-2">
 							<Label htmlFor="email">Email</Label>
 							<Input

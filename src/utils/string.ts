@@ -19,21 +19,21 @@ interface PluralizeOptions {
 export function pluralize(data: any[] | number | undefined, options: PluralizeOptions) {
 	let length = 0
 
-	if(!data) {
+	if (!data) {
 		length = 0
-	} else if(Array.isArray(data)) {
+	} else if (Array.isArray(data)) {
 		length = data.length
-	} else if(!isNaN(data) && isFinite(data)){
+	} else if (!isNaN(data) && isFinite(data)) {
 		length = data
 	}
-	
+
 	let term = options.emptyTerm || 'Nenhum'
 
-	if(length === 1) {
+	if (length === 1) {
 		term = options.singularTerm
 	}
 
-	if(length > 1) {
+	if (length > 1) {
 		term = options.pluralTerm || `${options.singularTerm}s`
 	}
 
