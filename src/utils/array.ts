@@ -1,3 +1,5 @@
+import { Person } from "@/types/Person"
+
 export function groupItemsInPairs<T>(array: T[]): T[][] {
 	if (!array || array.length % 2 !== 0) {
 		throw new Error('Array must have pair length.')
@@ -37,4 +39,18 @@ export function groupIntoCouples(people: Person[]) {
 	}
 
 	return couples
+}
+
+export function groupInPairs(people: Person[]) {
+	return people.reduce((result: Person[][], item) => {
+		const lastPair = result[result.length - 1]
+
+		if (!lastPair || lastPair.length === 2) {
+			result.push([item])
+		} else {
+			lastPair.push(item)
+		}
+
+		return result
+	}, [] as Person[][]) as [Person, Person][]
 }

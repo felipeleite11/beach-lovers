@@ -183,18 +183,16 @@ export default function TournamentList() {
 																		const person = subscription.person
 
 																		return (
-																			(
-																				<li key={subscription.id}>
-																					<Link href={`/person/${person.slug}`} className="flex items-center gap-2 cursor-pointer hover:opacity-80 w-fit text-slate-700 dark:text-slate-300">
-																						<Avatar className="w-8 h-8">
-																							<AvatarImage src={person.image} />
-																							<AvatarFallback>{person.name[0].toUpperCase()}</AvatarFallback>
-																						</Avatar>
+																			<li key={subscription.id}>
+																				<Link href={`/person/${person.slug}`} className="flex items-center gap-2 cursor-pointer hover:opacity-80 w-fit text-slate-700 dark:text-slate-300">
+																					<Avatar className="w-8 h-8">
+																						<AvatarImage src={person.image} className="object-cover" />
+																						<AvatarFallback>{person.name[0].toUpperCase()}</AvatarFallback>
+																					</Avatar>
 
-																						<span className="text-sm">{person.name}</span>
-																					</Link>
-																				</li>
-																			)
+																					<span className="text-sm">{person.name}</span>
+																				</Link>
+																			</li>
 																		)
 																	})}
 																</ul>

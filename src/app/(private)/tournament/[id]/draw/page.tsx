@@ -6,14 +6,14 @@ import { Play, RotateCw } from "lucide-react"
 import Link from "next/link"
 import { toast } from "sonner"
 import { useQuery } from "@tanstack/react-query"
-import { tournaments } from "@/storage"
 import { Skeleton } from "@/components/ui/skeleton"
-import { groupIntoCouples, shuffle } from "@/utils/array"
+import { groupInPairs, shuffle } from "@/utils/array"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { Tournament } from "@/types/Tournament"
 import { cn } from "@/lib/utils"
+import { fetchTournamentById } from "@/lib/api"
 
 export default function Draw() {
 	const { id } = useParams<{ id: string }>()
@@ -26,16 +26,9 @@ export default function Draw() {
 	const { data: tournament } = useQuery<Tournament>({
 		queryKey: ['fetch-tournament-by-id'],
 		queryFn: async () => {
-			const foundTournament = tournaments.find(tournament => tournament.id === +id!)
+			const foundTournament = await fetchTournamentById(id)
 
-			if (!foundTournament) {
-				toast.error('Torneio não encontrado!')
-
-				router.back()
-				return
-			}
-
-			return foundTournament!
+			return foundTournament
 		}
 	})
 
@@ -56,15 +49,17 @@ export default function Draw() {
 			return false
 		}
 
-		const malePeople = subscriptions.filter(subscription => subscription.person.gender === 'M')
-		const femalePeople = subscriptions.filter(subscription => subscription.person.gender === 'F')
+		// Para duplas mistas:
 
-		if(malePeople.length !== femalePeople.length) {
-			toast.warning('A quantidade de homens é diferente da quantidade de mulheres.')
+		// const malePeople = subscriptions.filter(subscription => subscription.person.gender === 'M')
+		// const femalePeople = subscriptions.filter(subscription => subscription.person.gender === 'F')
 
-			router.back()
-			return false
-		}
+		// if(malePeople.length !== femalePeople.length) {
+		// 	toast.warning('A quantidade de homens é diferente da quantidade de mulheres.')
+
+		// 	router.back()
+		// 	return false
+		// }
 
 		return true
 	}
@@ -74,7 +69,7 @@ export default function Draw() {
 
 		people = shuffle(people)
 
-		const pairs = groupIntoCouples(people)
+		const pairs = groupInPairs(people)
 
 		setDrawnPairs(pairs)
 	}
@@ -106,7 +101,7 @@ export default function Draw() {
 			{isSubscriptionsOk && !drawnPairs ? (
 				<>
 					{isSubscriptionsOk && !drawnPairs && (
-						<div className="flex flex-col gap-4">
+						<div className="flex flex-col gap-4 text-sm">
 							Tudo pronto para iniciar o sorteio.
 						</div>
 					)}
@@ -120,18 +115,17 @@ export default function Draw() {
 						Iniciar sorteio
 					</Button>
 
-					<div className="flex flex-col gap-4">
+					<div className="flex flex-col gap-5">
 						<span className="text-lg font-semibold">{subscribedPeople?.length} pessoas inscritas</span>
 
 						<div className="flex flex-wrap relative ml-4">
 							{subscribedPeople?.map((person, idx) => (
 								<Link href={`/person/${person.slug}`} key={person.id} className="flex flex-col items-center gap-1 group">
-									<Avatar className={cn(`w-24 h-24 -ml-4 animate__animated animate__fadeInUp delay-${idx * 100} group-hover:-mt-4 transition-all cursor-pointer`)}>
+									<Avatar className={cn(`w-24 h-24 -ml-4 animate__animated animate__fadeInUp delay-${idx * 100} group-hover:-mt-2 transition-all cursor-pointer`)}>
 										<AvatarImage src={person.image} className="object-cover w-full" />
 										<AvatarFallback>{person.name[0].toUpperCase()}</AvatarFallback>
 									</Avatar>
 
-									<span className="font-semibold text-slate-300 dark:text-slate-400 text-xs hidden group-hover:block w-20 text-center -ml-4">🏅#{person.id}</span>
 									<span className="text-xs font-semibold hidden group-hover:block w-20 text-center -ml-4">{person.name}</span>
 								</Link>
 							))}

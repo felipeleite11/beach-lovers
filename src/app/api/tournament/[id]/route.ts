@@ -4,7 +4,7 @@ import { NextRequest } from 'next/server'
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 	try {
 		const { id } = await params
-		
+
 		const response = await prisma.tournament.findUnique({
 			where: {
 				id
@@ -17,11 +17,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 					}
 				},
 				categories: true,
-				slots: true
+				slots: true,
+				management: true
 			}
 		})
-		
-		console.log('response', response)
 
 		return Response.json(response)
 	} catch (error) {

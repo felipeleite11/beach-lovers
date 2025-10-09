@@ -2,13 +2,13 @@
 
 import Link from "next/link"
 import { useParams } from "next/navigation"
+import { format } from "date-fns"
 import { ExternalLink, User } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tournament as TournamentType } from "@/types/Tournament"
 import { useQuery } from "@tanstack/react-query"
 import { fetchTournamentById } from "@/lib/api"
-import { format } from "date-fns"
 
 export default function Tournament() {
 	const { id } = useParams<{ id: string }>()
@@ -71,7 +71,7 @@ export default function Tournament() {
 						{/* {tournament.offered_subscriptions && <span>Vagas: {tournament.offered_subscriptions} pessoas ({tournament.offered_subscriptions / 2} duplas)</span>} */}
 					</div>
 
-					<div className="flex flex-col gap-4 text-sm border-t border-slate-800 pt-5">
+					<div className="flex flex-col gap-4 text-sm border-t border-slate-300 dark:border-slate-700 pt-5">
 						<h2 className="font-semibold text-lg">Informações do torneio</h2>
 
 						<div className="whitespace-pre-wrap text-base font-sans">
@@ -110,7 +110,7 @@ export default function Tournament() {
 							)}
 
 							<div className="flex flex-col gap-1">
-								<span className="font-semibold text-md">{person.name}</span>
+								<span className="font-semibold text-sm">{person.name}</span>
 								{/* {person.status?.tournament_management && <span className="text-slate-400 text-xs">Organizou outros {person.status.tournament_management} torneios</span>} */}
 							</div>
 						</Link>

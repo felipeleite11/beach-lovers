@@ -1,6 +1,5 @@
-import { uploadToMinio } from "@/config/file-storage"
 import { prisma } from "@/lib/prisma"
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest } from "next/server"
 
 export async function GET(
 	request: NextRequest,

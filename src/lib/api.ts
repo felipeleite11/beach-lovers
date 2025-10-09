@@ -118,6 +118,19 @@ export async function searchTournaments(data: TournamentSearchData): Promise<Tou
 	return response.data
 }
 
+// Subscription
+export async function subscribeInTournament(data: { category: string, tournament: string }) {
+	const response = await api.post<Subscription>('/api/subscription', data)
+
+	return response
+}
+
+export async function removeSubscription(data: { id: string }) {
+	const response = await api.delete<Subscription>(`/api/subscription/${data.id}`)
+
+	return response
+}
+
 // Arena
 export async function fetchArenas(): Promise<Arena[]> {
 	const response = await api.get<Arena[]>('/api/arena')
