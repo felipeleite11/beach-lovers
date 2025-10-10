@@ -70,11 +70,14 @@ export function GlobalContextProvider({ children }: GlobalContextProviderProps) 
 	}, [user])
 
 	return (
-		<GlobalContext.Provider value={{
-			user,
-			person,
-			isProfileComplete
-		}}>
+		<GlobalContext.Provider 
+			value={{
+				user,
+				person,
+				isProfileComplete
+			}} 
+			suppressHydrationWarning
+		>
 			{children}
 		</GlobalContext.Provider>
 	)

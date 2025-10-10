@@ -66,10 +66,12 @@ export default function TournamentHeader() {
 			className="w-full h-56 2xl:h-80 transition-all bg-cover bg-no-repeat bg-center rounded-lg relative animate__animated animate__fadeIn animate__fast"
 			style={{ backgroundImage: `url(${tournament.image})` }}
 		>
-			<div className="bg-slate-800/30 absolute top-0 left-0 w-full h-full flex flex-col gap-6 p-8">
-				<h1 className="text-xl 2xl:text-3xl font-bold text-white bg-slate-900/80 p-4 rounded-md w-fit shadow-lg">{tournament.title}</h1>
+			<div className="bg-slate-800/30 rounded-md absolute top-0 left-0 w-full h-full flex flex-col gap-6 p-8">
+				<h1 className="text-xl 2xl:text-3xl font-bold text-white bg-slate-900/80 p-4 rounded-md w-fit shadow-lg">
+					{tournament.title}
+				</h1>
 
-				<div className="flex gap-24 items-end -bottom-8 absolute">
+				<div className="flex w-[96%] gap-24 items-end -bottom-8 absolute justify-between">
 					{/* Public options */}
 					<div className="flex gap-6">
 						{subscription === null ? (
@@ -98,7 +100,7 @@ export default function TournamentHeader() {
 
 					{/* Manager options */}
 					{isManager === true ? (
-						<div className="flex gap-6 items-center">
+						<div className="flex gap-6 items-center mb-3">
 							<ButtonGroup>
 								<DropdownMenu>
 									<DropdownMenuTrigger asChild>

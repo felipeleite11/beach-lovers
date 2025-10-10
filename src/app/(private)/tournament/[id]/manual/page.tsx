@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form"
 import { Check, ChevronsUpDown, Eraser } from "lucide-react"
 import { useParams } from "next/navigation"
@@ -26,6 +26,7 @@ import {
 	PopoverContent,
 	PopoverTrigger
 } from "@/components/ui/popover"
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 type FormValues = {
 	pairs: Person[]
@@ -33,6 +34,8 @@ type FormValues = {
 
 export default function Manual() {
 	const { id } = useParams<{ id: string }>()
+
+	const [pairsConfirmation, setPairsConfirmation] = useState<Person[][]>(null)
 
 	const { control, register, handleSubmit, reset, setValue, getValues, watch } = useForm<FormValues>({
 		defaultValues: {
@@ -46,7 +49,26 @@ export default function Manual() {
 	})
 
 	const onSubmit: SubmitHandler<FormValues> = data => {
-		console.log(data)
+		// console.log(data)
+
+		// const { pairs } = data
+
+		// TODO: dividir pairs em duplas
+
+		const players = tournament?.subscriptions.map(subs => subs.person)
+
+		console.log('players', players)
+
+		setPairsConfirmation([
+			[
+				players[0],
+				players[1]
+			],
+			[
+				players[2], 
+				players[3]
+			]
+		])
 	}
 
 	const { data: tournament } = useQuery<Tournament>({
@@ -68,7 +90,8 @@ export default function Manual() {
 		}
 	}, [tournament])
 
-	const participants = tournament?.subscriptions.map(subs => ({
+	const players = tournament?.subscriptions.map(subs => ({
+		...subs.person,
 		value: subs.person.name.toLowerCase(),
 		label: subs.person.name
 	}))
@@ -76,20 +99,23 @@ export default function Manual() {
 	const includedNames = getValues('pairs').map(item => item.name)
 	const isReady = includedNames.every(Boolean)
 
+	console.log('pairsConfirmation', pairsConfirmation)
+	
 	return (
 		<div className="flex flex-col gap-6">
 			<h1 className="font-semibold text-2xl">Defina as duplas / equipes manualmente</h1>
 
 			<p className="text-sm">Preencha todos as vagas com os atletas correspondentes.</p>
 
-			{participants && (
-				<form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-4 w-[36rem] items-end">
+			{players && (
+				<form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-4 w-[40rem] items-end">
 					{fields.map((field, index) => {
 						const currentValue = getValues(`pairs.${index}.name`)
+						const currentValueImage = players.find(player => player.value === currentValue)?.image
 						const hasTitle = index % 2 === 0
 
 						return (
-							<div className="flex flex-col gap-2">
+							<div className="flex flex-col gap-2" key={field.id}>
 								{hasTitle && (
 									<span className="font-semibold text-md col-span-2">
 										<h2>
@@ -98,11 +124,18 @@ export default function Manual() {
 									</span>
 								)}
 
-								<div key={field.id} className="grid grid-cols-[14rem_1rem] gap-2">
+								<div className="grid grid-cols-[1.6rem_14rem_1rem] gap-2">
 									{/* Necessário para funcionarem os selects */}
 									<span className="hidden">{watch(`pairs.${index}.name`)}</span>
 
 									<Popover>
+										{currentValueImage && (
+											<Avatar className="w-10 h-10">
+												<AvatarImage src={currentValueImage} className="object-cover" />
+												<AvatarFallback>?</AvatarFallback>
+											</Avatar>
+										)}
+
 										<PopoverTrigger asChild>
 											<Button
 												variant="outline"
@@ -111,7 +144,7 @@ export default function Manual() {
 												className="w-56 justify-between self-end"
 											>
 												{currentValue ? 
-													participants.find(participant => participant.value === currentValue.toLowerCase())?.label : 
+													players.find(participant => participant.value === currentValue.toLowerCase())?.label : 
 													'Selecione...'}
 												<ChevronsUpDown className="opacity-50" />
 											</Button>
@@ -124,21 +157,28 @@ export default function Manual() {
 													<CommandEmpty>Atleta não encontrado.</CommandEmpty>
 
 													<CommandGroup>
-														{participants.map(participant => (
+														{players.map(player => (
 															<CommandItem
-																key={participant.value}
-																value={participant.value}
+																key={player.value}
+																value={player.value}
 																onSelect={value => {
 																	setValue(`pairs.${index}.name`, value)
 																}}
-																disabled={includedNames.includes(participant.value)}
+																disabled={includedNames.includes(player.value)}
 															>
-																{participant.label}
+																<div className="grid grid-cols-[3rem_auto] items-center">
+																	<Avatar className="w-9 h-9">
+																		<AvatarImage src={player.image} className="object-cover" />
+																		<AvatarFallback>{player.name[0].toUpperCase()}</AvatarFallback>
+																	</Avatar>
+
+																	<span>{player.label}</span>
+																</div>
 
 																<Check
 																	className={cn(
 																		"ml-auto",
-																		currentValue === participant.value ? "opacity-100" : "opacity-0"
+																		currentValue === player.value ? "opacity-100" : "opacity-0"
 																	)}
 																/>
 															</CommandItem>
@@ -153,7 +193,7 @@ export default function Manual() {
 										<Button 
 											size="icon" 
 											type="button"
-											className="ml-0"
+											className="ml-0 w-9 h-9 self-end"
 											onClick={() => {
 												setValue(`pairs.${index}.name`, '')
 											}}
@@ -168,6 +208,30 @@ export default function Manual() {
 
 					<Button type="submit" disabled={!isReady} className="justify-self-end col-start-2 w-full">Concluir</Button>
 				</form>
+			)}
+
+			{pairsConfirmation && (
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-40">
+					{pairsConfirmation.map((pair, idx) => (
+						<div className="flex justify-between gap-6 relative" key={idx}>
+							<Avatar className={cn(`w-24 h-24 animate__animated animate__fadeInUp`)}>
+								<AvatarImage src={pair[0].image} className="object-cover w-full" />
+								<AvatarFallback>{pair[0].name[0].toUpperCase()}</AvatarFallback>
+							</Avatar>
+
+							<Avatar className={cn(`w-24 h-24 absolute left-20 top-6 shadow-md animate__animated animate__fadeInUp delay-[200ms]`)}>
+								<AvatarImage src={pair[1].image} className="object-cover w-full" />
+								<AvatarFallback>{pair[1].name[0].toUpperCase()}</AvatarFallback>
+							</Avatar>
+
+							<div className="flex flex-col absolute top-24 w-48">
+								<span className={cn(`text-lg bg-white dark:bg-transparent py-1 px-2 rounded-md w-fit font-bold animate__animated animate__fadeInUp`)}>{pair[0].name}</span>
+								<span className={cn(`text-md bg-white dark:bg-transparent py-1 px-2 rounded-md w-fit font-bold ml-1 -mt-2 animate__animated animate__fadeInUp delay-[200ms]`)}>&</span>
+								<span className={cn(`text-lg bg-white dark:bg-transparent py-1 px-2 rounded-md w-fit font-bold ml-6 -mt-7 animate__animated animate__fadeInUp delay-[200ms]`)}>{pair[1].name}</span>
+							</div>
+						</div>
+					))}
+				</div>
 			)}
 		</div>
 	)
