@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { ExternalLink, Mars, Venus } from 'lucide-react'
+import { ExternalLink, Mars, Venus, Check } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Button } from './ui/button'
 import Link from 'next/link'
@@ -10,21 +10,24 @@ import { fetchTournaments } from '@/lib/api'
 import { Tournament } from '@/types/Tournament'
 import { cn } from '@/lib/utils'
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip'
-import { format, isSameDay } from 'date-fns'
+import { format, isSameDay, isBefore } from 'date-fns'
 import { useRouter } from 'next/navigation'
 import { pluralize } from '@/utils/string'
+import { usePerson } from "@/hooks/usePerson"
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
+	Sheet,
+	SheetContent,
+	SheetDescription,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
 } from "@/components/ui/sheet"
 import { SpinnerImage } from './ui/spinner'
 
 export default function TournamentList() {
 	const router = useRouter()
+
+	const person = usePerson()
 
 	const { data: tournaments } = useQuery<Tournament[]>({
 		queryKey: ['get-last-tournaments'],
@@ -37,43 +40,73 @@ export default function TournamentList() {
 	})
 
 	function getStatusBadge(tournament: Tournament) {
+		const subscriptionStart = new Date(tournament.subscription_start)
+		const subscriptionEnd = new Date(tournament.subscription_end)
+		const startDate = new Date(tournament.start_date)
+		const endDate = new Date(tournament.end_date)
+		const now = new Date()
+
 		switch (tournament.status) {
-			case 'created':
+			case 'inscrições abertas':
+			case 'acontecendo agora':
 				return (
-					<span className="text-[0.6rem] bg-white text-slate-800 rounded-md p-1 w-fit">
-						{`Início das inscrições: ${format(new Date(tournament.subscription_start), 'dd/MM/yyyy hh:mm')}`}
+					<span className="text-[0.6rem] bg-emerald-600 text-white rounded-md p-1 w-fit uppercase">
+						{tournament.status}
 					</span>
 				)
-
-			case 'available_subscription':
-				return <span className="text-[0.6rem] bg-emerald-600 text-white rounded-md p-1 w-fit">INSCRIÇÕES ABERTAS</span>
-
-			case 'cancelled':
-				return <span className="text-[0.6rem] bg-red-500 text-white rounded-md p-1 w-fit">CANCELADO</span>
-
-			case 'finished':
-				return <span className="text-[0.6rem] bg-sky-500 text-white rounded-md p-1 w-fit">FINALIZADO</span>
+			case 'inscrições não iniciadas':
+			case 'aguardando início':
+				return (
+					<span className="text-[0.6rem] bg-yellow-400 text-yellow-900 rounded-md p-1 w-fit uppercase">
+						{tournament.status}
+					</span>
+				)
+			case 'cancelado':
+			case 'encerrado':
+				return (
+					<span className="text-[0.6rem] bg-red-500 text-white rounded-md p-1 w-fit uppercase">
+						{tournament.status}
+					</span>
+				)
 		}
 	}
 
-	if(!tournaments) {
+	function getSubscriptionStatusText(tournament: Tournament) {
+		const subscriptionStart = new Date(tournament.subscription_start)
+		const subscriptionEnd = new Date(tournament.subscription_end)
+		const startDate = new Date(tournament.start_date)
+		const endDate = new Date(tournament.end_date)
+		const now = new Date()
+
+		if (isBefore(now, subscriptionStart)) {
+			return `As inscrições iniciam em ${format(new Date(tournament.subscription_start), 'dd/MM/yyyy HH:mm')}`
+		}
+
+		if (isBefore(endDate, now)) {
+			return `As incrições encerraram em ${format(subscriptionEnd, 'dd/MM/yyyy HH:mm')}`
+		}
+	}
+
+	if (!tournaments || !person) {
 		return (
 			<div className="h-80">
 				<SpinnerImage />
 			</div>
 		)
 	}
-	
+
 	return (
-		<div className="w-full xl:pr-8 flex flex-col gap-6 overflow-y-auto">
+		<div className="w-full xl:pr-8 flex flex-col gap-6 overflow-y-auto scrollbar-thin">
 			<h1 className="font-semibold text-3xl">Torneios</h1>
 
 			{tournaments?.map((tournament, idx) => {
-				const isSubscriptionAvailable = tournament.status === 'available_subscription'
+				const isSubscribed = tournament.subscriptions.some(subscription => subscription.person_id === person.id)
+				const isSubscriptionAvailable = isBefore(new Date(tournament.subscription_start), new Date()) && isBefore(new Date(), new Date(tournament.subscription_end))
 				const startDate = new Date(tournament.start_date)
 				const endDate = new Date(tournament.end_date)
 				const formattedStartDate = format(startDate, 'dd/MM/yyyy HH:mm\'h\'')
 				const formattedEndDate = format(endDate, 'dd/MM/yyyy HH:mm\'h\'')
+				const tooltipText = getSubscriptionStatusText(tournament)
 
 				return (
 					<div key={tournament.id} className={cn(
@@ -91,8 +124,8 @@ export default function TournamentList() {
 								</div>
 
 								<span className="text-sm">
-									Data: {isSameDay(startDate, endDate) ? 
-										formattedStartDate : 
+									Data: {isSameDay(startDate, endDate) ?
+										formattedStartDate :
 										`${formattedStartDate} a ${formattedEndDate}`}
 								</span>
 
@@ -113,19 +146,28 @@ export default function TournamentList() {
 								<Tooltip>
 									<TooltipTrigger asChild>
 										<Button
-											className="bg-orange-600 text-white cursor-pointer hover:bg-orange-500"
+											className={cn(
+												'text-white cursor-pointer',
+												{ 'bg-orange-600 hover:bg-orange-500': !isSubscribed },
+												{ 'bg-emerald-600 hover:bg-emerald-600': isSubscribed }
+											)}
 											onClick={() => {
 												router.push(`/tournament/${tournament.id}/subscribe`)
 											}}
-											disabled={!isSubscriptionAvailable}
+											disabled={!isSubscriptionAvailable || isSubscribed}
 										>
-											Inscrever-se
+											{isSubscribed ? (
+												<div className="flex items-center gap-1">
+													Inscrito
+													<Check />
+												</div>
+											) : 'Inscrever-se'}
 										</Button>
 									</TooltipTrigger>
 
-									{tournament.subscription_start === 'created' && (
+									{tooltipText && (
 										<TooltipContent side="bottom">
-											As inscrições iniciam em {format(new Date(tournament.subscription_start), 'dd/MM/yyyy hh:mm')}
+											{tooltipText}
 										</TooltipContent>
 									)}
 								</Tooltip>
@@ -136,31 +178,36 @@ export default function TournamentList() {
 							<span className="font-semibold">Categorias</span>
 
 							<div className="flex flex-wrap gap-3">
-								{tournament.categories?.map(category => {
+								{tournament.categories?.map(({ category, slots }) => {
 									const subscriptionsOfCategory = tournament.subscriptions?.filter(subscription => subscription.category_id === category.id) || []
-									const totalSlots = tournament.slots?.filter(slot => slot.category_id === category.id).length || 0
-									const remainingSlots = totalSlots - subscriptionsOfCategory?.length
+									const remainingSlots = slots - subscriptionsOfCategory?.length
+									const icon = category.code.length === 2 && category.code.startsWith('M') ?
+										<Mars size={16} /> :
+										category.code.startsWith('F') ?
+											<Venus size={16} /> :
+											<div className="flex">
+												<Mars size={16} />
+												<Venus size={16} />
+											</div>
 
 									return (
 										<Sheet key={category.id}>
 											<SheetTrigger>
 												<div className="flex flex-col gap-1 items-center border border-slate-400 dark:border-slate-600 rounded-md w-fit py-2 px-3 hover:bg-slate-100 dark:hover:bg-slate-900 cursor-pointer transition-all">
 													<span className="flex items-center gap-2">
-														{category.name.toLowerCase().includes('masc') ? (
-															<Mars size={16} />
-														) : category.name.toLowerCase().includes('fem') ? (
-															<Venus size={16} />
-														) : null}
+														{icon}
 
 														{category.name}
 													</span>
 
 													{!!subscriptionsOfCategory?.length ? (
-														<span className="text-slate-400">
+														<span className="text-slate-400 text-xs">
 															{pluralize(subscriptionsOfCategory, { singularTerm: 'inscrito' })}
 														</span>
 													) : (
-														<span className="italic text-slate-400 text-xs">Nenhum inscrito</span>
+														<span className="italic text-slate-400 text-xs">
+															Nenhum inscrito
+														</span>
 													)}
 												</div>
 											</SheetTrigger>
@@ -169,16 +216,20 @@ export default function TournamentList() {
 												<SheetHeader>
 													<SheetTitle>{category.name}</SheetTitle>
 
-													{!!remainingSlots && (
+													{remainingSlots > 0 ? (
 														<span className="text-slate-400 text-xs">
 															Restam {remainingSlots} vagas
+														</span>
+													) : (
+														<span className="text-slate-400 text-xs">
+															Todas as vagas já foram preenchidas
 														</span>
 													)}
 
 													<SheetDescription asChild>
 														<div className="mt-6">
 															{!!subscriptionsOfCategory?.length ? (
-																<ul className="flex flex-col gap-2 max-h-36 overflow-y-auto">
+																<ul className="flex flex-col gap-2 h-full overflow-y-auto">
 																	{subscriptionsOfCategory?.map(subscription => {
 																		const person = subscription.person
 

@@ -20,7 +20,7 @@ export default function PersonProfile() {
 		queryKey: ['get-person-by-id'],
 		queryFn: async () => {
 			const person = await fetchPerson(slug)
-			
+
 			return person
 		}
 	})
@@ -50,7 +50,7 @@ export default function PersonProfile() {
 	return (
 		<div className="flex flex-col gap-2">
 			<div className="grid grid-cols-[14rem_auto] gap-14 items-center">
-				
+
 				{/* Header */}
 				<div className="relative self-start animate__animated animate__fadeIn animate__faster">
 					<Avatar className="w-56 h-56 shadow-md">
@@ -97,7 +97,7 @@ export default function PersonProfile() {
 
 						<span className="flex items-center gap-2">
 							<Volleyball size={17} />
-							{(person.wins || 0) + (person.defeats || 0) + (person.wos || 0)} jogos
+							{pluralize((person.wins || 0) + (person.defeats || 0) + (person.wos || 0), { singularTerm: 'jogo' })}
 						</span>
 
 						<span className="flex items-center gap-2">
@@ -162,11 +162,11 @@ export default function PersonProfile() {
 											<CarouselNext className="cursor-pointer" />
 										</Carousel>
 									) : (
-										<Image 
+										<Image
 											src={post.images[0].url}
-											width={1000} 
-											height={1000} 
-											className="max-h-[28rem] w-full h-full object-contain rounded-sm" alt="" 
+											width={1000}
+											height={1000}
+											className="max-h-[28rem] w-full h-full object-contain rounded-sm" alt=""
 										/>
 									)}
 

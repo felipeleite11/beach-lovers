@@ -37,7 +37,7 @@ export default function TournamentHeader() {
 
 	const { mutate: handleCancelSubscription } = useMutation({
 		mutationFn: async () => {
-			if(subscription) {
+			if (subscription) {
 				await removeSubscription({
 					id: subscription.id
 				})
@@ -51,51 +51,60 @@ export default function TournamentHeader() {
 			toast.success('Sua inscrição foi cancelada!')
 		},
 		onError: error => {
-			toast.error(error?.message || ' Ocorreu um erro ao cadastrar o torneio.')
+			toast.error(error?.message || 'Ocorreu um erro ao cadastrar o torneio.')
 		}
 	})
 
 	if (!tournament) {
-		return (
-			<Skeleton className="h-64 w-full rounded-lg" />
-		)
+		return <Skeleton className="h-64 w-full rounded-lg" />
 	}
+
+	const isSubscriptionAvailable = tournament.status === 'inscrições abertas'
+	const isSubscribed = subscription !== null
 
 	return (
 		<div
 			className="w-full h-56 2xl:h-80 transition-all bg-cover bg-no-repeat bg-center rounded-lg relative animate__animated animate__fadeIn animate__fast"
 			style={{ backgroundImage: `url(${tournament.image})` }}
 		>
-			<div className="bg-slate-800/30 rounded-md absolute top-0 left-0 w-full h-full flex flex-col gap-6 p-8">
+			<div className="bg-slate-800/30 rounded-md absolute top-0 left-0 w-full h-full flex flex-col gap-6 p-2 md:p-8">
 				<h1 className="text-xl 2xl:text-3xl font-bold text-white bg-slate-900/80 p-4 rounded-md w-fit shadow-lg">
 					{tournament.title}
 				</h1>
 
-				<div className="flex w-[96%] gap-24 items-end -bottom-8 absolute justify-between">
+				<div className="flex w-[96%] gap-6 items-end -bottom-8 absolute justify-between">
 					{/* Public options */}
 					<div className="flex gap-6">
-						{subscription === null ? (
-							<Button
-								asChild
-								className="bg-emerald-700 hover:bg-emerald-800 text-white hover:text-white h-20 2xl:h-20 w-32 transition-all"
-							>
-								<Link 
-									href={`/tournament/${tournament.id}/subscribe`} 
-									className="flex flex-col justify-center gap-1 2xl:gap-3"
-								>
-									<LogIn />
-									Inscrever-se
-								</Link>
-							</Button>
-						) : !!subscription ? (
-							<Button
-								className="bg-red-600 hover:bg-red-700 text-white hover:text-white h-20 2xl:h-20 w-48 transition-all flex flex-col justify-center gap-1 2xl:gap-3"
-								onClick={() => { handleCancelSubscription() }}
-							>
-								<X />
-								Cancelar minha inscrição
-							</Button>
-						) : null}
+						{isSubscriptionAvailable ? (
+							<>
+								{!isSubscribed ? (
+									<Button
+										asChild
+										className="bg-emerald-700 hover:bg-emerald-800 text-white hover:text-white h-20 2xl:h-20 w-32 transition-all"
+									>
+										<Link
+											href={`/tournament/${tournament.id}/subscribe`}
+											className="flex flex-col justify-center gap-1 2xl:gap-3"
+										>
+											<LogIn />
+											Inscrever-se
+										</Link>
+									</Button>
+								) : isSubscribed ? (
+									<Button
+										className="bg-red-600 hover:bg-red-700 text-white hover:text-white h-20 2xl:h-20 w-48 transition-all flex flex-col justify-center gap-1 2xl:gap-3"
+										onClick={() => { handleCancelSubscription() }}
+									>
+										<X />
+										Cancelar minha inscrição
+									</Button>
+								) : null}
+							</>
+						) : (
+							<span className="uppercase bg-sky-600 text-sm text-white p-2 rounded-md">
+								{tournament.status}
+							</span>
+						)}
 					</div>
 
 					{/* Manager options */}

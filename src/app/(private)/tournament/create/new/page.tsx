@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -13,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Check, Image } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, useForm, useFieldArray } from "react-hook-form"
 import { toast } from "sonner"
 import z from "zod"
 import { queryClient } from "@/components/Providers"
@@ -45,9 +46,7 @@ const tournamentCreateSchema = z
 				val => /^R\$\s?\d{1,3}(\.\d{3})*,\d{2}$/.test(val),
 				"Formato inválido"
 			)
-			.transform(val => {
-				return extractNumbers(val)
-			}),
+			.transform(extractNumbers),
 		subscription_start: z.string()
 			.refine(val => /^\d{2}\/\d{2}\/\d{4}$/.test(val), "Use o formato dd/mm/yyyy")
 			.transform(val => {
@@ -69,6 +68,10 @@ const tournamentCreateSchema = z
 		categories: z.array(z.string())
 			.refine(value => value.some(item => item), {
 				message: 'Selecione pelo menos uma categoria'
+			}),
+		slots: z.array(z.string())
+			.refine(value => !!value, {
+				message: 'Informe a quantidade de vagas de todas as categorias selecionadas'
 			})
 	})
 
@@ -77,7 +80,7 @@ export type TournamentCreateFormInputs = z.infer<typeof tournamentCreateSchema>
 export default function Create() {
 	const router = useRouter()
 
-	const { register, control, handleSubmit, formState: { errors, isSubmitting } } = useForm<TournamentCreateFormInputs>({
+	const { register, control, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<TournamentCreateFormInputs>({
 		resolver: zodResolver(tournamentCreateSchema),
 		defaultValues: {
 			title: 'Torneio de teste',
@@ -88,9 +91,20 @@ export default function Create() {
 			start_datetime: '05/10/2025 09:00',
 			end_datetime: '05/10/2025 22:00',
 			arena_id: '1',
+			slots: [],
 			categories: []
 		}
 	})
+
+	// const { fields: categoriesFields } = useFieldArray({
+	// 	control,
+	// 	name: 'categories'
+	// })
+
+	// const { fields: slotsFields } = useFieldArray({
+	// 	control,
+	// 	name: 'slots'
+	// })
 
 	const { data: arenas } = useQuery({
 		queryKey: ['get-arenas'],
@@ -122,9 +136,17 @@ export default function Create() {
 			router.replace('/home')
 		},
 		onError: error => {
-			toast.error(error?.message || ' Ocorreu um erro ao cadastrar o torneio.')
+			toast.error(error?.message || 'Ocorreu um erro ao cadastrar o torneio.')
 		}
 	})
+
+	// useEffect(() => {
+	// 	if (categories) {
+	// 		reset({
+	// 			categories: categories.map(cat => cat.id)
+	// 		})
+	// 	}
+	// }, [categories])
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -171,18 +193,32 @@ export default function Create() {
 						)}
 					</div>
 
+					<div className="space-y-2">
+						<Label htmlFor="description">Detalhes</Label>
+
+						<Textarea
+							id="description"
+							{...register("description")}
+							className="dark:bg-slate-800 h-24"
+						/>
+
+						{errors.description && (
+							<p className="text-sm text-red-500">{errors.description.message}</p>
+						)}
+					</div>
+
 					<Controller
 						name="arena_id"
 						control={control}
 						render={({ field }) => (
-							<div className="space-y-2">
+							<div className="space-y-2 w-full sm:w-72">
 								<Label htmlFor="arena">Local</Label>
 
 								<Select
 									value={field.value}
 									onValueChange={field.onChange}
 								>
-									<SelectTrigger className="w-80 cursor-pointer">
+									<SelectTrigger className="w-full cursor-pointer">
 										<SelectValue placeholder="Selecione" />
 									</SelectTrigger>
 
@@ -200,21 +236,7 @@ export default function Create() {
 						)}
 					/>
 
-					<div className="space-y-2">
-						<Label htmlFor="description">Detalhes</Label>
-
-						<Textarea
-							id="description"
-							{...register("description")}
-							className="dark:bg-slate-800 h-24"
-						/>
-
-						{errors.description && (
-							<p className="text-sm text-red-500">{errors.description.message}</p>
-						)}
-					</div>
-
-					<div className="flex gap-4">
+					<div className="flex flex-col sm:flex-row gap-4">
 						<div className="space-y-2">
 							<Label htmlFor="start_datetime">Data de início</Label>
 
@@ -244,7 +266,7 @@ export default function Create() {
 						</div>
 					</div>
 
-					<div className="flex gap-4">
+					<div className="flex flex-col sm:flex-row gap-4">
 						<div className="space-y-2 w-full">
 							<Label htmlFor="subscription_start">Início das inscrições</Label>
 
@@ -292,7 +314,7 @@ export default function Create() {
 						<div className="space-y-4">
 							<Label htmlFor="category">Categorias</Label>
 
-							<div className="flex flex-col xl:grid xl:grid-cols-3 gap-3">
+							<div className="flex flex-col gap-3">
 								{categories?.map(category => (
 									<Controller
 										key={category.id}
@@ -305,10 +327,10 @@ export default function Create() {
 												<div className="flex items-center space-x-2 text-sm">
 													<Checkbox
 														checked={isChecked}
-														onCheckedChange={(checked) => {
+														onCheckedChange={checked => {
 															const newValue = checked
 																? [...field.value, category.id]
-																: field.value.filter((val) => val !== category.id)
+																: field.value.filter(val => val !== category.id)
 															field.onChange(newValue)
 														}}
 													/>
@@ -325,6 +347,29 @@ export default function Create() {
 							)}
 						</div>
 					)}
+
+					{/* {categoriesFields.map(fieldCategory => (
+						<div className="flex flex-col gap-2" key={fieldCategory.id}>
+							<div className="flex items-center space-x-2 text-sm">
+								<Checkbox
+									checked={isChecked}
+									onCheckedChange={checked => {
+										const newValue = checked
+											? [...fieldCategory.value, category.id]
+											: fieldCategory.value.filter(val => val !== category.id)
+										fieldCategory.onChange(newValue)
+									}}
+								/>
+								<label>{category.name}</label>
+							</div>
+
+							{slotsFields.map((fieldSlot) => (
+								<div className="flex flex-col gap-2" key={fieldSlot.id}>
+									categoria
+								</div>
+							))}
+						</div>
+					))} */}
 
 					<Button type="submit" disabled={isSubmitting}>
 						Cadastrar torneio

@@ -10,7 +10,7 @@ export async function GET(request: Request) {
 			where: tournamentId ? {
 				tournaments: {
 					some: {
-						id: tournamentId
+						tournament_id: tournamentId
 					}
 				}
 			} : undefined

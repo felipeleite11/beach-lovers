@@ -42,7 +42,7 @@ export async function GET(
 }
 
 export async function PUT(
-	req: NextRequest, 
+	req: NextRequest,
 	{ params }: { params: Promise<{ slug: string }> }
 ) {
 	try {

@@ -15,18 +15,20 @@ import { toast } from "sonner"
 import z from "zod"
 import JSConfetti from 'js-confetti'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogClose
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogClose
 } from "@/components/ui/dialog"
 import { queryClient } from "@/components/Providers"
 import { useState } from "react"
 import Link from "next/link"
-
-const jsConfetti = new JSConfetti()
+import { CategoryBoxList } from "@/components/CategoryBoxList"
+import { usePerson } from "@/hooks/usePerson"
+import Image from "next/image"
+import { SpinnerImage } from "@/components/ui/spinner"
 
 const subscriptionSchema = z
 	.object({
@@ -37,6 +39,8 @@ export type SubscriptionFormInputs = z.infer<typeof subscriptionSchema>
 
 export default function () {
 	const { id } = useParams()
+
+	const person = usePerson()
 
 	const { control, handleSubmit, formState: { errors, isSubmitting, isValid }, watch } = useForm<SubscriptionFormInputs>({
 		resolver: zodResolver(subscriptionSchema)
@@ -66,7 +70,7 @@ export default function () {
 
 	const { mutate: onSubmit } = useMutation({
 		mutationFn: async (data: SubscriptionFormInputs) => {
-			if(tournament) {
+			if (tournament) {
 				await subscribeInTournament({
 					...data,
 					tournament: tournament.id
@@ -76,7 +80,10 @@ export default function () {
 		onSuccess: () => {
 			toast.success('Inscrição concluída!')
 
-			jsConfetti.addConfetti()
+			if (window !== undefined) {
+				const jsConfetti = new JSConfetti()
+				jsConfetti.addConfetti()
+			}
 
 			queryClient.invalidateQueries({
 				queryKey: ['fetch-tournament-by-id']
@@ -85,52 +92,90 @@ export default function () {
 			setIsSuccessMessageOpen(true)
 		},
 		onError: error => {
-			toast.error(error?.message || ' Ocorreu um erro ao cadastrar o torneio.')
+			toast.error(error?.message || 'Ocorreu um erro ao cadastrar o torneio.')
 		}
 	})
 
+	if (!person || !categories) {
+		return (
+			<SpinnerImage />
+		)
+	}
+
+	const userCategory = `${person.gender}${person.category}`
+
+	const enabledCategories = person && categories ? categories?.filter(category =>
+		// Filtro para o sexo da usuário
+		category.code === userCategory ||
+		// Filtro para categorias mistas
+		category.code.replace('MI', '') === person.category
+	) : []
+
 	return (
-		<form
-			onSubmit={handleSubmit((data: SubscriptionFormInputs) => onSubmit(data))}
-			className="max-w-md flex flex-col gap-3"
-		>
-			<Controller
-				name="category"
-				control={control}
-				render={({ field }) => (
-					<div className={cn('space-y-2', { hidden: !categories?.length })}>
-						<Label htmlFor="category">Categoria</Label>
+		<div className="flex flex-col items-center gap-4">
+			{enabledCategories.length > 0 ? (
+				<>
+					<p className="text-sm">Você está apto a competir nas seguintes categorias:</p>
 
-						<Select
-							value={field.value ?? ''}
-							onValueChange={field.onChange}
-						>
-							<SelectTrigger className="cursor-pointer w-full">
-								<SelectValue placeholder="Selecione" />
-							</SelectTrigger>
+					{categories && (
+						<CategoryBoxList
+							categories={categories}
+							highlighted_categories={enabledCategories}
+						/>
+					)}
 
-							<SelectContent>
-								{categories?.map(category => (
-									<SelectItem key={category.id} value={category.id}>
-										{category.name}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
+					<form
+						onSubmit={handleSubmit((data: SubscriptionFormInputs) => onSubmit(data))}
+						className="max-w-md flex flex-col gap-3 mt-4"
+					>
+						<Controller
+							name="category"
+							control={control}
+							render={({ field }) => (
+								<div className={cn('space-y-2', { hidden: !categories?.length })}>
+									<Label htmlFor="category">Escolha a categoria</Label>
 
-						{errors.category && (
-							<p className="text-sm text-red-500">{errors.category.message}</p>
-						)}
-					</div>
-				)}
-			/>
+									<Select
+										value={field.value ?? ''}
+										onValueChange={field.onChange}
+									>
+										<SelectTrigger className="cursor-pointer w-full">
+											<SelectValue placeholder="Selecione" />
+										</SelectTrigger>
 
-			<p className="text-sm text-slate-600 dark:text-slate-300">Ao confirmar sua inscrição você concorda com nossos termos de uso e está ciente de que o valor da mesma será debitado do seu saldo atual.</p>
+										<SelectContent>
+											{enabledCategories?.map(category => (
+												<SelectItem key={category.id} value={category.id}>
+													{category.name}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
 
-			<Button disabled={isSubmitting || !isValid} type="submit" className="cursor-pointer self-end">
-				Realizar inscrição
-				<Check size={16} />
-			</Button>
+									{errors.category && (
+										<p className="text-sm text-red-500">{errors.category.message}</p>
+									)}
+								</div>
+							)}
+						/>
+
+						<p className="text-sm text-slate-600 dark:text-slate-300">Ao confirmar sua inscrição você concorda com nossos termos de uso e está ciente de que o valor da mesma será debitado do seu saldo atual.</p>
+
+						<Button disabled={isSubmitting || !isValid} type="submit" className="cursor-pointer self-end mt-4">
+							Realizar inscrição
+							<Check size={16} />
+						</Button>
+					</form>
+				</>
+			) : (
+				<div className="flex flex-col gap-4 items-center text-slate-600 dark:text-slate-300">
+					<Image src="/images/sad.png" alt="" width={80} height={80} className="object-contain w-14" />
+
+					<span className="italic text-sm">
+						Infelizmente você não se encaixa em nenhuma categoria neste torneio.
+					</span>
+				</div>
+			)}
 
 			<Dialog open={isSuccessMessageOpen} onOpenChange={setIsSuccessMessageOpen}>
 				<DialogContent
@@ -158,6 +203,6 @@ export default function () {
 					</DialogHeader>
 				</DialogContent>
 			</Dialog>
-		</form>
+		</div>
 	)
 }

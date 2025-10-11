@@ -25,7 +25,7 @@ export default async function PrivateLayout({ children }: { children: ReactNode 
 					<MainMenu />
 				</Sheet>
 				
-				<main className="flex flex-col pl-10 pt-8 pr-8 pb-8">
+				<main className="flex flex-col px-4 md:pl-10 md:pr-8 pt-8 pb-8">
 					{children}
 				</main>
 			</GlobalContextProvider>

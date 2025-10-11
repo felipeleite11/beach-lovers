@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Tournament as TournamentType } from "@/types/Tournament"
 import { useQuery } from "@tanstack/react-query"
 import { fetchTournamentById } from "@/lib/api"
+import Script from "next/script"
 
 export default function Tournament() {
 	const { id } = useParams<{ id: string }>()
@@ -53,22 +54,38 @@ export default function Tournament() {
 		)
 	}
 
+	const totalSlots = tournament.categories.reduce((total, { slots }) => total + slots, 0)
+
 	return (
 		<div className="flex flex-col gap-6">
 			<div className="grid grid-cols-[3fr_1fr] gap-10 mt-3">
 				<div className="flex flex-col gap-8">
 					<div className="flex flex-col gap-3 text-sm 2xl:text-sm rounded-md">
-						<span className="flex gap-2">
-							Local: {tournament.arena?.name} - {tournament.arena?.address}
-							
+						<div className="flex gap-2">
+							<span className="font-semibold">Local:</span> {tournament.arena?.name} - {tournament.arena?.address}
+
 							<Link href={`/arena/${tournament.arena?.id}`}>
 								<ExternalLink size={16} />
 							</Link>
-						</span>
+						</div>
 
-						<span>Data e horário: {format(new Date(tournament.start_date), 'dd/MM/yyyy hh:mm\'\h\'')}</span>
-						{tournament.price && <span>Valor por participante: R$ {+tournament.price / 100}</span>}
-						{/* {tournament.offered_subscriptions && <span>Vagas: {tournament.offered_subscriptions} pessoas ({tournament.offered_subscriptions / 2} duplas)</span>} */}
+						<div>
+							<span className="font-semibold">Data e horário:</span> {format(new Date(tournament.start_date), 'dd/MM/yyyy hh:mm\'\h\'')}
+						</div>
+
+						{tournament.price && (
+							<div>
+								<span className="font-semibold">Valor por participante:</span> R$ {+tournament.price / 100}
+							</div>
+						)}
+
+						<div>
+							<span className="font-semibold">Categorias abertas:</span> {tournament.categories.map(({ category }) => category.name).join(', ')}
+						</div>
+
+						<div>
+							<span className="font-semibold">Vagas:</span> {totalSlots} pessoas ({totalSlots / 2} duplas)
+						</div>
 					</div>
 
 					<div className="flex flex-col gap-4 text-sm border-t border-slate-300 dark:border-slate-700 pt-5">
@@ -78,18 +95,15 @@ export default function Tournament() {
 							{tournament.description}
 						</div>
 
-						{/* {tournament.video && (
-							<div className="h-[24rem] w-[40rem]">
-								<iframe
-									src={tournament.video}
-									title="Chamada para o torneio"
-									className="w-full h-full"
-									allow="accelerometer; encrypted-media; gyroscope; web-share"
-									referrerPolicy="strict-origin-when-cross-origin"
-									allowFullScreen
-								/>
-							</div>
-						)} */}
+						{tournament.video && (
+							<iframe
+								width="560"
+								height="315"
+								src={tournament.video}
+								title="Chamada para o torneio"
+								allow="accelerometer; encrypted-media; gyroscope"
+							/>
+						)}
 					</div>
 				</div>
 
@@ -97,7 +111,7 @@ export default function Tournament() {
 					<h2 className="font-semibold text-lg">Organização</h2>
 
 					{tournament.management?.map(person => (
-						<Link key={person.id} href={`/profile/${person.slug}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+						<Link key={person.id} href={`/person/${person.slug}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
 							{person.image ? (
 								<Avatar className="w-12 h-12 2xl:w-14 2xl:h-14">
 									<AvatarImage src={person.image} className="object-cover" />

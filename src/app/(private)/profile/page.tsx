@@ -113,7 +113,7 @@ export default function Profile() {
 			router.push('/home')
 		},
 		onError: error => {
-			toast.error(error?.message || ' Ocorreu um erro ao cadastrar o torneio.')
+			toast.error(error?.message || 'Ocorreu um erro ao cadastrar o torneio.')
 		}
 	})
 

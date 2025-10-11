@@ -76,7 +76,15 @@ export default function Manual() {
 		mutationFn: async () => {
 			await defineTeams({
 				tournament: tournament.id,
-				pairs: pairsConfirmation
+				pairs: pairsConfirmation.reduce((result, pair) => {
+					return [
+						...result,
+						[
+							{ id: pair[0].id, name: pair[0].name },
+							{ id: pair[1].id, name: pair[1].name }
+						]
+					]
+				}, [] as Partial<Person>[][])
 			})
 		},
 		onSuccess: () => {
@@ -85,7 +93,7 @@ export default function Manual() {
 			router.replace(`/tournament/${id}`)
 		},
 		onError: error => {
-			toast.error(error?.message || ' Ocorreu um erro ao definir as duplas / equipes.')
+			toast.error(error?.message || 'Ocorreu um erro ao definir as duplas / equipes.')
 		}
 	})
 
@@ -230,29 +238,29 @@ export default function Manual() {
 				<div className="flex flex-col gap-8 animate__animated animate__fadeIn">
 					<span className="text-sm">Confirme as duplas formadas.</span>
 						
-					<div className="flex flex-wrap gap-10 mb-16">
+					<div className="flex flex-wrap gap-x-10 gap-y-24 mb-16">
 						{pairsConfirmation.map((pair, idx) => (
 							<div className="flex justify-between gap-6 relative w-44" key={idx}>
-								<Avatar className={cn(`w-24 h-24 animate__animated animate__fadeInUp`)}>
+								<Avatar className={cn(`w-20 h-20 md:w-24 md:h-24 animate__animated animate__fadeInUp`)}>
 									<AvatarImage src={pair[0].image} className="object-cover w-full" />
 									<AvatarFallback>{pair[0].name[0].toUpperCase()}</AvatarFallback>
 								</Avatar>
 
-								<Avatar className={cn(`w-24 h-24 absolute left-20 top-6 shadow-md animate__animated animate__fadeInUp delay-[200ms]`)}>
+								<Avatar className={cn(`w-20 h-20 md:w-24 md:h-24 absolute left-16 md:left-20 top-6 shadow-md animate__animated animate__fadeInUp delay-[200ms]`)}>
 									<AvatarImage src={pair[1].image} className="object-cover w-full" />
 									<AvatarFallback>{pair[1].name[0].toUpperCase()}</AvatarFallback>
 								</Avatar>
 
 								<div className="flex flex-col absolute top-24 w-48">
-									<span className={cn(`text-lg bg-white dark:bg-transparent py-1 px-2 rounded-md w-fit font-bold animate__animated animate__fadeInUp`)}>{pair[0].name}</span>
-									<span className={cn(`text-md bg-white dark:bg-transparent py-1 px-2 rounded-md w-fit font-bold ml-1 -mt-2 animate__animated animate__fadeInUp delay-[200ms]`)}>&</span>
-									<span className={cn(`text-lg bg-white dark:bg-transparent py-1 px-2 rounded-md w-fit font-bold ml-6 -mt-7 animate__animated animate__fadeInUp delay-[200ms]`)}>{pair[1].name}</span>
+									<span className={cn(`text-md md:text-lg bg-white dark:bg-transparent py-1 px-2 rounded-md w-fit font-bold animate__animated animate__fadeInUp`)}>{pair[0].name}</span>
+									<span className={cn(`text-sm md:text-md bg-white dark:bg-transparent py-1 px-2 rounded-md w-fit font-bold ml-1 -mt-2 animate__animated animate__fadeInUp delay-[200ms]`)}>&</span>
+									<span className={cn(`text-md md:text-lg bg-white dark:bg-transparent py-1 px-2 rounded-md w-fit font-bold ml-6 -mt-7 animate__animated animate__fadeInUp delay-[200ms]`)}>{pair[1].name}</span>
 								</div>
 							</div>
 						))}
 					</div>
 
-					<div className="flex gap-4 justify-end">
+					<div className="flex flex-col md:flex-row gap-4 justify-end">
 						<Button onClick={handleConfirmPairs}>
 							Confirmar as duplas / equipes
 							<CheckCircle />

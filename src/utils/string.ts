@@ -37,5 +37,9 @@ export function pluralize(data: any[] | number | undefined, options: PluralizeOp
 		term = options.pluralTerm || `${options.singularTerm}s`
 	}
 
-	return `${length} ${term}`
+	if (term === 'Nenhum') {
+		return `${term}`
+	} else {
+		return `${length} ${term}`
+	}
 }

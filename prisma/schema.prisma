@@ -170,6 +170,7 @@ model Tournament {
   start_date         DateTime
   end_date           DateTime
   arena_id           String?
+  video              String?
   price              Int?
   latitude           Float?
   longitude          Float?
@@ -179,10 +180,9 @@ model Tournament {
   created_at         DateTime @default(now())
   updated_at         DateTime @default(now()) @updatedAt
 
-  categories    Category[]           @relation("TournamentCategories")
+  categories    TournamentCategory[]
   info_items    TournamentInfoItem[]
   subscriptions Subscription[]
-  slots         TournamentSlot[]
   management    Person[]             @relation("TournamentManagement")
   arena         Arena?               @relation(fields: [arena_id], references: [id])
   matches       Match[]
@@ -200,13 +200,25 @@ model TournamentInfoItem {
 }
 
 model Category {
-  id            String           @id @default(cuid())
+  id            String               @id @default(cuid())
   name          String
-  tournaments   Tournament[]     @relation("TournamentCategories")
+  code          String               @unique
   subscriptions Subscription[]
-  slots         TournamentSlot[]
+  tournaments   TournamentCategory[]
 
   @@map("category")
+}
+
+model TournamentCategory {
+  slots         Int
+  category_id   String
+  tournament_id String
+
+  category   Category   @relation(fields: [category_id], references: [id])
+  tournament Tournament @relation(fields: [tournament_id], references: [id])
+
+  @@id([tournament_id, category_id])
+  @@map("tournament_category")
 }
 
 model Subscription {
@@ -222,18 +234,6 @@ model Subscription {
 
   @@unique([tournament_id, person_id, category_id])
   @@map("subscription")
-}
-
-model TournamentSlot {
-  id            String   @id @default(cuid())
-  tournament_id String
-  category_id   String
-  created_at    DateTime @default(now())
-
-  tournament Tournament @relation(fields: [tournament_id], references: [id])
-  category   Category   @relation(fields: [category_id], references: [id])
-
-  @@map("tournament_slot")
 }
 
 model Region {

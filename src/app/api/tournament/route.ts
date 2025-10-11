@@ -2,7 +2,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { NextRequest } from 'next/server'
 import { headers } from 'next/headers'
-import { isAfter } from 'date-fns'
+import { isAfter, isBefore } from 'date-fns'
 import { uploadToMinio } from '@/config/file-storage'
 
 export async function GET(request: Request) {
@@ -36,13 +36,18 @@ export async function GET(request: Request) {
 					}
 				},
 				categories: {
+					select: {
+						category: true,
+						slots: true
+					},
 					where: genderCondition ? {
-						name: {
-							contains: genderCondition
+						category: {
+							name: {
+								contains: genderCondition
+							}
 						}
 					} : undefined
-				},
-				slots: true
+				}
 			},
 			orderBy: {
 				created_at: 'desc'
@@ -54,15 +59,44 @@ export async function GET(request: Request) {
 				},
 				categories: genderCondition ? {
 					some: {
-						name: {
-							contains: genderCondition
+						category: {
+							name: {
+								contains: genderCondition
+							}
 						}
 					}
-				} : undefined
+				} : undefined,
+				status: {
+					not: 'cancelled'
+				}
 			}
 		})
 
-		return Response.json(response)
+		const tournaments = response.map(item => {
+			let status: string
+			const now = new Date()
+
+			if (item.status === 'cancelled') {
+				status = 'cancelado'
+			} else if (isBefore(now, item.subscription_start)) {
+				status = 'inscrições não iniciadas'
+			} else if (isBefore(item.subscription_start, now) && isBefore(now, item.subscription_end)) {
+				status = 'inscrições abertas'
+			} else if (isBefore(item.subscription_end, now) && isBefore(now, item.start_date)) {
+				status = 'aguardando início'
+			} else if (isBefore(item.start_date, now) && isBefore(now, item.end_date)) {
+				status = 'acontecendo agora'
+			} else {
+				status = 'encerrado'
+			}
+
+			return {
+				...item,
+				status
+			}
+		})
+
+		return Response.json(tournaments)
 	} catch (error) {
 		return Response.json(
 			{ error: 'Erro interno do servidor' },
@@ -83,6 +117,7 @@ export async function POST(req: NextRequest) {
 		const subscription_start = formData.get("subscription_start") as string
 		const subscription_end = formData.get("subscription_end") as string
 		const price = formData.get("price") as string
+		const slots = formData.get("slots") as string
 		const file = formData.get("image") as File
 		const categories = (formData.get("categories") as string).split(',')
 		let imageLink
@@ -125,8 +160,13 @@ export async function POST(req: NextRequest) {
 					}
 				},
 				categories: {
-					connect: categories.map(category => ({
-						id: category
+					create: categories.map(category => ({
+						category: {
+							connect: {
+								id: category
+							}
+						},
+						slots: +slots
 					}))
 				}
 			}

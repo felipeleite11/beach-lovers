@@ -118,13 +118,15 @@ export async function searchTournaments(data: TournamentSearchData): Promise<Tou
 	return response.data
 }
 
-type PersonToUpdate = {
+type TeamDefinitionParams = {
 	tournament: string
-	pairs: [Person, Person][]
+	pairs: string[][]
 }
 
-export async function defineTeams({ tournament, pairs }: PersonToUpdate) {
+export async function defineTeams({ tournament, pairs }: TeamDefinitionParams) {
 	const response = await api.post(`/api/tournament/${tournament}`, { pairs })
+
+	return response.data
 }
 
 // Subscription
