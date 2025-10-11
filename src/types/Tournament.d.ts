@@ -13,7 +13,6 @@ interface Tournament {
   subscription_start: string
   subscription_end: string
   created_at: string
-
   categories: Category[]
   info_items: TournamentInfoItem[]
   subscriptions: Subscription[]

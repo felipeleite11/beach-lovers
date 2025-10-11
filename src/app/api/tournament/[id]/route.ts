@@ -32,3 +32,25 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 		)
 	}
 }
+
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+	const { id } = await params
+	const { pairs }: SubscriptionData = await req.json()
+
+	console.log(id, pairs)
+
+	try {
+		// await prisma.tournament.create({
+
+		// })
+
+		return Response.json({})
+	} catch(error) {
+		console.log(error)
+		
+		return Response.json(
+			{ error: 'Erro interno do servidor' },
+			{ status: 500 }
+		)
+	}
+}

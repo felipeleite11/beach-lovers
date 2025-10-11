@@ -41,7 +41,7 @@ export function groupIntoCouples(people: Person[]) {
 	return couples
 }
 
-export function groupInPairs(people: Person[]) {
+export function groupInPairs(people: Person[]): [Person, Person][] {
 	return people.reduce((result: Person[][], item) => {
 		const lastPair = result[result.length - 1]
 
